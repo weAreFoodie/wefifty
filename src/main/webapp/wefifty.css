@@ -1,0 +1,29 @@
+.sidebar {
+    width: 160px;
+    justify-content: center;
+    gap: 40px;
+}
+
+.sidebar-btn {
+    width: 130PX;
+    margin-top: 0 !important;
+}
+
+
+.swiper-button-next, .swiper-button-prev {
+    opacity: 0;
+    width: 50%;
+    height: 100%;
+    inset: 0;
+    color: black;
+}
+.swiper-button-next {
+    inset: 0 50%;
+}
+.swiper-button-prev {
+    inset: 0 0;
+}
+
+.swiper-pagination-bullet-active {
+    background-color: black !important;
+}

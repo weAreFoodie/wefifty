@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile Card</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet" href="wefifty.css">
+</head>
+<body class="bg-gray-100 flex min-h-screen">
+        
+        <!-- Sidebar (무채색) -->
+    <aside class="bg-black flex flex-col items-center py-6 space-y-6 sidebar">
+        <a href="#">
+            <img src="images/wefifty_logo.png" alt="">
+        </a>
+        <button class="flex flex-col items-center">
+            <img src="https://placehold.co/40" class="w-10 h-10 rounded-full border-2 border-white" alt="User profile avatar">
+            <p class="text-sm text-white mt-1">김철수 님</p>
+        </button>
+        <button class="flex flex-col items-center text-white sidebar-btn">
+            <i class="fas fa-users fa-2x"></i>
+            <span class="text-xs mt-1">친구 목록</span>
+        </button>
+    </aside>
+    <div class="flex flex-row justify-center items-center w-screen h-screen overflow-hidden bg-gray-100 relative">
+        
+        <!-- Pagination and Navigation Buttons -->
+        <div class="carousel-nav">
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+        <div class="w-[90%] max-w-[1200px]">
+            <!-- Swiper Container -->
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+
+
+                <!-- Profile Card 1 -->
+                <div class="swiper-slide">
+                    <div class="relative w-full h-[80vh] rounded-3xl shadow-xl overflow-hidden">
+                        <img src="https://placehold.co/600x400" class="absolute inset-0 object-cover w-full h-full" alt="User profile background">
+                        <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+                        <div class="absolute inset-0 p-6 flex flex-col justify-between text-white">
+                            <div class="flex items-center space-x-3">
+                                <img src="https://placehold.co/40" class="w-10 h-10 rounded-full border-2 border-white" alt="User profile avatar">
+                                <div>
+                                    <p class="text-sm">@user291057</p>
+                                    <p class="text-xs">1976년생</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm mb-1">청운대학교 5기 졸업생 모여라</p>
+                                    <h2 class="text-2xl font-semibold">청운대학교 친구입니다.</h2>
+                                </div>
+                                <button class="add-member-btn bg-white text-gray-800 px-4 py-2 flex items-center space-x-2 rounded-lg shadow-lg">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span class="font-medium">친구야 혹시 너니?</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Profile Card 1 -->
+                <div class="swiper-slide">
+                    <div class="relative w-full h-[80vh] rounded-3xl shadow-xl overflow-hidden">
+                        <img src="https://placehold.co/600x400" class="absolute inset-0 object-cover w-full h-full" alt="User profile background">
+                        <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+                        <div class="absolute inset-0 p-6 flex flex-col justify-between text-white">
+                            <div class="flex items-center space-x-3">
+                                <img src="https://placehold.co/40" class="w-10 h-10 rounded-full border-2 border-white" alt="User profile avatar">
+                                <div>
+                                    <p class="text-sm">@user291057</p>
+                                    <p class="text-xs">1976년생</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm mb-1">청운대학교 5기 졸업생 모여라</p>
+                                    <h2 class="text-2xl font-semibold">청운대학교 친구입니다.</h2>
+                                </div>
+                                <button class="add-member-btn bg-white text-gray-800 px-4 py-2 flex items-center space-x-2 rounded-lg shadow-lg">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span class="font-medium">친구야 혹시 너니?</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Profile Card 1 -->
+                <div class="swiper-slide">
+                    <div class="relative w-full h-[80vh] rounded-3xl shadow-xl overflow-hidden">
+                        <img src="https://placehold.co/600x400" class="absolute inset-0 object-cover w-full h-full" alt="User profile background">
+                        <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+                        <div class="absolute inset-0 p-6 flex flex-col justify-between text-white">
+                            <div class="flex items-center space-x-3">
+                                <img src="https://placehold.co/40" class="w-10 h-10 rounded-full border-2 border-white" alt="User profile avatar">
+                                <div>
+                                    <p class="text-sm">@user291057</p>
+                                    <p class="text-xs">1976년생</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm mb-1">청운대학교 5기 졸업생 모여라</p>
+                                    <h2 class="text-2xl font-semibold">청운대학교 친구입니다.</h2>
+                                </div>
+                                <button class="add-member-btn bg-white text-gray-800 px-4 py-2 flex items-center space-x-2 rounded-lg shadow-lg">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span class="font-medium">친구야 혹시 너니?</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 팝업을 위한 스크립트 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // 친구 정보 요청 버튼 -> 팝업
+            document.querySelectorAll(".add-member-btn").forEach(button => {
+                const myId = null // cookie 학습 후 작성
+                const friendId = button.getAttribute("data-userid");
+
+                button.addEventListener("click", function () {
+                    Swal.fire({
+                        title: "친구 정보 요청",
+                        html: "<p>해당 멤버가 요청을 수락하면 정보확인이 가능합니다.</p> <br> <p>500 포인트가 차감됩니다.</p>",
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonText: "너 맞니?",
+                        cancelButtonText: "아 착각했네"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            try {
+                                // friendId, myId, ${} 를 통해 친구요청 table insert
+                                Swal.fire("요청 완료!", "친구 요청이 성공적으로 전송되었습니다.", "success");
+                            } catch (e) {
+                                console.log(e);
+                                Swal.fire("요청 실패!", "잠시 뒤에 다시 시도해 주세요.", "error");
+                            }
+                        }
+                        
+                    });
+                });
+            });
+        });
+        </script>
+        
+    <!-- 캐러셀을 위한 스크립트 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            new Swiper(".swiper-container", {
+                loop: false,
+                spaceBetween: 20,
+                slidesPerView: 1,
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
+                },
+            });
+        });
+    </script>
+        
+</body>
+</html>
