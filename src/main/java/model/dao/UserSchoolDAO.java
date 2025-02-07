@@ -11,7 +11,7 @@ import util.DBUtil;
 
 public class UserSchoolDAO {
 	// 회원이 속한 학교들 정보 받아오기
-	public static ArrayList<UserSchoolDTO> findUserSchoolByUserId(int userId) throws SQLException{
+	public static ArrayList<UserSchoolDTO> findUserSchoolByUserId(int userId) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
@@ -35,15 +35,15 @@ public class UserSchoolDAO {
 						.gradYear(rset.getInt("grad_year"))
 						.schoolType(rset.getString("school_type").charAt(0)).build());
 			}
-			
 		} finally {
 			DBUtil.close(conn, pstmt, rset);
 		}
+		
 		return list;
 	}
 	
 	// 회원의 학교 정보 추가하기
-	public static boolean addUserSchool(UserSchoolDTO school) throws SQLException{
+	public static boolean addUserSchool(UserSchoolDTO school) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
@@ -67,7 +67,7 @@ public class UserSchoolDAO {
 		
 	}
 	// 회원의 학교 정보 수정하기
-	public static boolean updateUserSchool(UserSchoolDTO school) throws SQLException{
+	public static boolean updateUserSchool(UserSchoolDTO school) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
@@ -92,7 +92,7 @@ public class UserSchoolDAO {
 	}
 	
 	// 회원의 학교 정보 삭제하기
-	public static boolean deleteUserSchool(int userSchoolId) throws SQLException{
+	public static boolean deleteUserSchool(int userSchoolId) throws SQLException {
 		Connection conn = null;	
 		PreparedStatement pstmt = null;
 		boolean result = false;
@@ -111,5 +111,34 @@ public class UserSchoolDAO {
 		}
 		
 		return result;	
+	}
+	
+	// 학교이름, 졸업년도, 범위값으로 해당 범위에 있는 회원의 user_id 받아오기
+	ArrayList<Integer> findFriendsBySchoolAndGradYear(String schoolName, int gradYear, int gap) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		ArrayList<Integer> list = null;
+		
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement("SELECT user_id FROM user_school WHERE school_name = ? AND grad_year BETWEEN ? AND ?");
+			
+			pstmt.setString(1, schoolName);
+	        pstmt.setInt(2, gradYear - gap); // 졸업년도 - 범위
+	        pstmt.setInt(3, gradYear + gap); // 졸업년도 + 범위
+		
+	        rset = pstmt.executeQuery();
+	        
+	        list = new ArrayList<Integer>();
+	        
+	        while (rset.next()) {
+	            list.add(rset.getInt("user_id")); // user_id 추가
+	        }
+		} finally {
+			DBUtil.close(conn, pstmt, rset);
+		}
+		
+		return list;
 	}
 }
