@@ -1,14 +1,37 @@
 package model.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 import model.dto.FriendRequstDTO;
 import model.dto.UserDTO;
+import util.DBUtil;
 
 public class FriendRequestDAO {
 	// 친구 요청 정보 추가하기
-	void addFriendRequest(FriendRequstDTO request) {
+	public static boolean addFriendRequest(FriendRequstDTO friendRequestDTO) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
 		
+		try {
+			conn = DBUtil.getConnection();
+			
+			pstmt = conn.prepareStatement("insert (sender_id, receiver_id, status) into friend_request values(null, ?, ?, ?)");
+			pstmt.setInt(1, friendRequestDTO.getSenderId());
+			pstmt.setInt(2, friendRequestDTO.getReceiverId());
+			pstmt.setString(3, String.valueOf(friendRequestDTO.getStatus()));
+		
+			if (pstmt.executeUpdate() != 0) {
+				return true;
+			}
+			
+		} finally {
+			DBUtil.close(conn, pstmt);
+		}
+		
+		return false;
 	}
 	
 	// 친구 요청 정보 변경하기(수락, 거절)
