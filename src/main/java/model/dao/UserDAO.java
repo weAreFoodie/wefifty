@@ -106,8 +106,26 @@ public class UserDAO {
 	}
 	
 	// 회원 정보 삭제
-	void deleteeUser(UserDTO user) {
+	public boolean deleteeUser(UserDTO user) throws SQLException  {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
 		
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement("DELETE FROM user WHERE user_id = ?");
+			
+			pstmt.setInt(1, user.getUserId());
+			
+			if(pstmt.executeUpdate() != 0) {
+				return true;
+			}
+		} finally {
+			DBUtil.close(conn, pstmt);
+		}
+		
+		
+		
+		return false;
 	}
 	
 
