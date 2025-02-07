@@ -75,9 +75,34 @@ public class UserDAO {
 		return false;
 	}
 	
-	// 회원 정보 저장
-	void updateUser(UserDTO user) {
+	// 회원 정보 수정
+	public boolean updateUser(UserDTO user) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
 		
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement("UPDATE user SET pwd = ?, nickname = ?, bio = ?, "
+					+ "name = ?, gender = ?, phone = ?, birth = ?, "
+					+ "profile_picture = ? WHERE user_id = ?");
+			
+	        pstmt.setString(1, user.getPwd());
+	        pstmt.setString(2, user.getNickname());
+	        pstmt.setString(3, user.getBio());
+	        pstmt.setString(4, user.getName());
+	        pstmt.setString(5, String.valueOf(user.getGender()));  // char → String 변환
+	        pstmt.setString(6, user.getPhone());
+	        pstmt.setDate(7, Date.valueOf(user.getBirth()));  // LocalDate → java.sql.Date 변환
+	        pstmt.setString(8, user.getProfilePicture());
+	        pstmt.setInt(9, user.getUserId()); // WHERE 조건
+			
+	        if (pstmt.executeUpdate() != 0) {
+	        	return true;
+	        }
+		} finally {
+			DBUtil.close(conn, pstmt);
+		}
+		return false;
 	}
 	
 	// 회원 정보 삭제
