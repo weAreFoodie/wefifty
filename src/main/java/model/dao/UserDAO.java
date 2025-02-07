@@ -11,7 +11,7 @@ import util.DBUtil;
 
 public class UserDAO {
 	// 회원 정보 가져오기
-	public UserDTO getUserByUserId(int userId) throws SQLException {
+	public static UserDTO getUserByUserId(int userId) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
@@ -45,7 +45,7 @@ public class UserDAO {
 	}
 	
 	// 회원 추가
-	public boolean addUser(UserDTO user) throws SQLException {
+	public static int addUser(UserDTO user) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
@@ -64,19 +64,22 @@ public class UserDAO {
 			pstmt.setDate(8, Date.valueOf(user.getBirth()));  // LocalDate → java.sql.Date 변환
 			pstmt.setString(9, user.getProfilePicture());
 			pstmt.setInt(10, user.getPoint());
-			
-			if(pstmt.executeUpdate() != 0) {
-				return true;
-			}
 
+			if(pstmt.executeUpdate() != 0) {
+				// db에 저장된 결과 값 가져오기
+				ResultSet rs = pstmt.getGeneratedKeys();
+				if(rs.next()) {
+					return rs.getInt(1); // 생성된 userId 반환
+				}
+			}
 		} finally {
 			DBUtil.close(conn, pstmt);
 		}
-		return false;
+		return -1;
 	}
 	
 	// 회원 정보 수정
-	public boolean updateUser(UserDTO user) throws SQLException {
+	public static boolean updateUser(UserDTO user) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
@@ -106,7 +109,7 @@ public class UserDAO {
 	}
 	
 	// 회원 정보 삭제
-	public boolean deleteeUser(UserDTO user) throws SQLException  {
+	public static boolean deleteeUser(UserDTO user) throws SQLException  {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
