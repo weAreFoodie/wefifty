@@ -127,10 +127,4 @@ public class FriendRequestDAO {
 		return requestList;
 	}
 	
-	// 같은 학교, 졸업 년도(gap) 친구 목록 받아오기
-	List<UserDTO> findFriendsBySchoolAndGradYear(String schoolName, int gradYear, int gap){
-		return null;
-	}
-	
-	
 }
