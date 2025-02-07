@@ -127,4 +127,26 @@ public class FriendRequestDAO {
 		return requestList;
 	}
 	
+	public static boolean deleteFriendRequest(int requestId) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			conn = DBUtil.getConnection();
+			
+			pstmt = conn.prepareStatement("delete from friend_request where id=?");
+			pstmt.setInt(1, requestId);
+			
+			if (pstmt.executeUpdate() != 0) {
+				return true;
+			}
+			
+		} finally {
+			DBUtil.close(conn, pstmt);
+		}
+		
+		
+		return false;
+	}
+	
 }
