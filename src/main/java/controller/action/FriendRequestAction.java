@@ -12,19 +12,21 @@ import model.dto.FriendRequstDTO;
 public class FriendRequestAction implements Action {
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String url = "error.jsp";
+		String url = "views/error.jsp";
 		
 		try {
 			request.setAttribute("result-friendRequest", 
 					FriendRequestDAO.addFriendRequest(
 							FriendRequstDTO.builder()
-								.senderId(0)
-								.receiverId(0)
+								.senderId(Integer.parseInt(request.getParameter("senderId")))
+								.receiverId(Integer.parseInt(request.getParameter("receiverId")))
 								.status('p')
 								.build()
 						));
 			url = "home.jsp";
 		} catch(SQLException e) {
+			System.out.println("hi");
+			response.setStatus(400);
 			request.setAttribute("errorMsg", "친구 정보 요청 중에 문제가 발생했습니다.");
 			e.printStackTrace();
 		}
