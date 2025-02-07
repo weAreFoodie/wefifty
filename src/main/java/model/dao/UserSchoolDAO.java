@@ -6,10 +6,41 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import model.dto.FriendInfoListDTO;
 import model.dto.UserSchoolDTO;
+import model.dto.UserSchoolSummaryDTO;
 import util.DBUtil;
 
 public class UserSchoolDAO {
+	// 회원이 속한 학교들의 이름과 졸업년도 받아오기
+	public static ArrayList<UserSchoolSummaryDTO> findUserSchoolSummaryByUserId(int userId) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		ArrayList<UserSchoolSummaryDTO> list = null;
+		
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement("SELECT school_name, grad_year FROM user_school WHERE user_id = ?");
+			
+			pstmt.setInt(1, userId);
+			
+			rset = pstmt.executeQuery();
+			
+			list = new ArrayList<UserSchoolSummaryDTO>();
+			
+			while(rset.next()) {
+				list.add(UserSchoolSummaryDTO.builder()
+						.schoolName(rset.getString("school_name"))
+						.gradYear(rset.getInt("grad_year")).build());
+			}
+		} finally {
+			DBUtil.close(conn, pstmt, rset);
+		}
+		
+		return list;
+	}
+	
 	// 회원이 속한 학교들 정보 받아오기
 	public static ArrayList<UserSchoolDTO> findUserSchoolByUserId(int userId) throws SQLException {
 		Connection conn = null;
@@ -114,26 +145,69 @@ public class UserSchoolDAO {
 	}
 	
 	// 학교이름, 졸업년도, 범위값으로 해당 범위에 있는 회원의 user_id 받아오기
-	ArrayList<Integer> findFriendsBySchoolAndGradYear(String schoolName, int gradYear, int gap) throws SQLException {
+	public static ArrayList<FriendInfoListDTO> findFriendsBySchoolAndGradYear(ArrayList<UserSchoolSummaryDTO> schoolSummaryList, int gap, int userId) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
-		ArrayList<Integer> list = null;
+		ArrayList<FriendInfoListDTO> friendList = new ArrayList<>();
 		
 		try {
-			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement("SELECT user_id FROM user_school WHERE school_name = ? AND grad_year BETWEEN ? AND ?");
-			
-			pstmt.setString(1, schoolName);
-	        pstmt.setInt(2, gradYear - gap); // 졸업년도 - 범위
-	        pstmt.setInt(3, gradYear + gap); // 졸업년도 + 범위
-		
+			conn = DBUtil.getConnection(); // DB 연결
+
+	        // 동적으로 SQL 쿼리 생성
+	        StringBuilder queryBuilder = new StringBuilder();
+	        queryBuilder.append("SELECT DISTINCT u.user_id, u.nickname, u.bio, u.name, u.gender, u.birth, u.profile_picture, ")
+	                    .append("ABS(us.grad_year - ?) AS grad_diff ")
+	                    .append("FROM user u ")
+	                    .append("JOIN user_school us ON u.user_id = us.user_id ")
+	                    .append("WHERE u.user_id != ? AND (");
+
+	        List<Object> params = new ArrayList<>();
+	        params.add(userId); // 자신의 ID를 제외하기 위해 추가
+
+	        for (int i = 0; i < schoolSummaryList.size(); i++) {
+	            if (i > 0) queryBuilder.append(" UNION ");
+	            queryBuilder.append("SELECT u.user_id, u.nickname, u.bio, u.name, u.gender, u.birth, u.profile_picture, ")
+	                        .append("ABS(us.grad_year - ?) AS grad_diff ")
+	                        .append("FROM user u ")
+	                        .append("JOIN user_school us ON u.user_id = us.user_id ")
+	                        .append("WHERE u.user_id != ? AND us.school_name = ? AND us.grad_year BETWEEN ? AND ? ");
+	            
+	            // 각 학업 정보에 대해 조건 추가
+	            params.add(schoolSummaryList.get(i).getGradYear()); // grad_diff 계산용
+	            params.add(userId); // 자신의 ID 제외
+	            params.add(schoolSummaryList.get(i).getSchoolName()); // 학교 이름
+	            params.add(schoolSummaryList.get(i).getGradYear() - gap); // 최소 졸업 연도
+	            params.add(schoolSummaryList.get(i).getGradYear() + gap); // 최대 졸업 연도
+	        }
+
+	        queryBuilder.append(") ORDER BY grad_diff ASC");
+
+	        // SQL 실행
+	        pstmt = conn.prepareStatement(queryBuilder.toString());
+
+	        // 파라미터 세팅
+	        for (int i = 0; i < params.size(); i++) {
+	            if (params.get(i) instanceof Integer) {
+	                pstmt.setInt(i + 1, (Integer) params.get(i));
+	            } else if (params.get(i) instanceof String) {
+	                pstmt.setString(i + 1, (String) params.get(i));
+	            }
+	        }
+
 	        rset = pstmt.executeQuery();
-	        
-	        list = new ArrayList<Integer>();
-	        
+
 	        while (rset.next()) {
-	            list.add(rset.getInt("user_id")); // user_id 추가
+	            FriendInfoListDTO friend = new FriendInfoListDTO(
+	                rset.getInt("user_id"),
+	                rset.getString("nickname"),
+	                rset.getString("bio"),
+	                rset.getString("name"),
+	                rset.getString("gender").charAt(0),
+	                rset.getDate("birth").toLocalDate(),
+	                rset.getString("profile_picture")
+	            );
+	            friendList.add(friend);
 	        }
 		} finally {
 			DBUtil.close(conn, pstmt, rset);
