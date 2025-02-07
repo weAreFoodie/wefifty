@@ -1,6 +1,7 @@
 package controller;
 
 import controller.action.Action;
+import controller.action.ViewFriendListAction;
 
 public class ActionFactory {
 	private static ActionFactory instance = new ActionFactory();
@@ -15,8 +16,8 @@ public class ActionFactory {
 	public Action getHomeAction(String command) { // list
 		Action action = null;
 
-		if (command.equals("")) {
-
+		if (command.equals("friend-list")) {
+			action = new ViewFriendListAction();
 		} else if (command.equals("")) {
 
 		}
