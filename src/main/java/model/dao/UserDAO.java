@@ -8,9 +8,20 @@ public class UserDAO {
 		return null;
 	}
 	
+	// 회원 추가
+	void addUser(UserDTO user) {
+		
+	}
+	
 	// 회원 정보 저장
 	void updateUser(UserDTO user) {
 		
 	}
 	
+	// 회원 정보 삭제
+	void deleteeUser(UserDTO user) {
+		
+	}
+	
+
 }

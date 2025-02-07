@@ -18,4 +18,5 @@ public class UserSchoolDTO {
 	private int userId;
 	private String schoolName;
 	private int gradYear;
+	private char schoolType;
 }

@@ -14,6 +14,10 @@ public class UserSchoolDAO {
 	void addSchool(UserSchoolDTO School) {
 		
 	}
+	// 학교 수정
+	void updateUserSchool(UserSchoolDTO school) {
+		
+	}
 	
 	// 학교 삭제
 	void deleteSchoolById(int userSchoolId) {
