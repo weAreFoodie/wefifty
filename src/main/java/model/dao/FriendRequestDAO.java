@@ -20,7 +20,7 @@ public class FriendRequestDAO {
 		try {
 			conn = DBUtil.getConnection();
 			
-			pstmt = conn.prepareStatement("insert (sender_id, receiver_id, status) into friend_request values(null, ?, ?, ?)");
+			pstmt = conn.prepareStatement("INSERT INTO friend_request (sender_id, receiver_id, status) VALUES (?, ?, ?)");
 			pstmt.setInt(1, friendRequestDTO.getSenderId());
 			pstmt.setInt(2, friendRequestDTO.getReceiverId());
 			pstmt.setString(3, String.valueOf(friendRequestDTO.getStatus()));
