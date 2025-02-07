@@ -94,6 +94,39 @@ public class FriendRequestDAO {
 		return requestList;
 	}
 	
+	public static ArrayList<FriendRequstDTO> findFriendRequestsByReceiverId(int userId) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ArrayList<FriendRequstDTO> requestList = null;
+		
+		try {
+			conn = DBUtil.getConnection();
+			
+			pstmt = conn.prepareStatement("select * from friend_request where receiver_id=?");
+			pstmt.setInt(1, userId);
+			
+			rs = pstmt.executeQuery();
+			
+			requestList = new ArrayList<>();
+			while(rs.next()) {
+				requestList.add( FriendRequstDTO.builder()
+						.id(rs.getInt("id"))
+						.senderId(rs.getInt("sender_id"))
+						.receiverId(rs.getInt("receiver_id"))
+						.status(rs.getString("status").charAt(0))
+						.build()
+						);
+			}
+			
+		} finally {
+			DBUtil.close(conn, pstmt, rs);
+		}
+		
+		
+		return requestList;
+	}
+	
 	// 같은 학교, 졸업 년도(gap) 친구 목록 받아오기
 	List<UserDTO> findFriendsBySchoolAndGradYear(String schoolName, int gradYear, int gap){
 		return null;
