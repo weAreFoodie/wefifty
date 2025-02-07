@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.dao.UserSchoolDAO;
+import model.dto.FriendInfoListDTO;
 import model.dto.UserSchoolSummaryDTO;
 
 @WebServlet("/testUserSchool")
@@ -28,15 +29,16 @@ public class UserSchoolTest extends HttpServlet {
         int userId = 1; // user_id = 1번 회원이 검색하는 상황
 
         // 3. DB 조회
-        ArrayList<Integer> resultList = new ArrayList<>();
+        ArrayList<FriendInfoListDTO> resultList = new ArrayList<>();
         try {
             resultList = UserSchoolDAO.findFriendsBySchoolAndGradYear(schoolSummaryList, gap, userId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+ 
         // 4. 응답 출력
-        System.out.println(resultList.get(0));
-        System.out.println(resultList);
+        for (FriendInfoListDTO dto : resultList) {
+        	System.out.println(dto.getUserId() + " " + dto.getName() + " " + dto.getNickname());
+        }
     }
 }

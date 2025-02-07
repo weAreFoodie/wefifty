@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import model.dto.FriendInfoListDTO;
 import model.dto.UserSchoolDTO;
@@ -144,75 +145,68 @@ public class UserSchoolDAO {
 		return result;	
 	}
 	
-	// 학교이름, 졸업년도, 범위값으로 해당 범위에 있는 회원의 user_id 받아오기
+	// (학교이름, 졸업년도), 범위값, 유저 아이디 로 해당 범위에 있는 회원의 특정 user 정보 받아오기
 	public static ArrayList<FriendInfoListDTO> findFriendsBySchoolAndGradYear(ArrayList<UserSchoolSummaryDTO> schoolSummaryList, int gap, int userId) throws SQLException {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rset = null;
-		ArrayList<FriendInfoListDTO> friendList = new ArrayList<>();
-		
-		try {
-			conn = DBUtil.getConnection(); // DB 연결
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rset = null;
+        ArrayList<FriendInfoListDTO> list = new ArrayList<>();
+        
+        try {
+            conn = DBUtil.getConnection();
+            
+            // SQL 쿼리 동적 생성하기
+            StringBuilder sql = new StringBuilder();
+            sql.append("SELECT u.user_id, u.nickname, u.bio, u.name, u.gender, u.birth, u.profile_picture, friend_data.year_diff \n");
+            sql.append("FROM user u \n");
+            sql.append("JOIN (\n");
 
-	        // 동적으로 SQL 쿼리 생성
-	        StringBuilder queryBuilder = new StringBuilder();
-	        queryBuilder.append("SELECT DISTINCT u.user_id, u.nickname, u.bio, u.name, u.gender, u.birth, u.profile_picture, ")
-	                    .append("ABS(us.grad_year - ?) AS grad_diff ")
-	                    .append("FROM user u ")
-	                    .append("JOIN user_school us ON u.user_id = us.user_id ")
-	                    .append("WHERE u.user_id != ? AND (");
+            for (int i = 0; i < schoolSummaryList.size(); i++) {
+                if (i > 0) sql.append(" UNION \n"); // 여러 개의 (학교이름, 졸업년도) 조건을 UNION으로 합치기
+                
+                sql.append("SELECT us.user_id, ABS(CAST(us.grad_year AS SIGNED) - ?) AS year_diff \n");
+                sql.append("FROM user_school us \n");
+                sql.append("WHERE us.school_name = ? \n");
+                sql.append("AND us.grad_year BETWEEN ? AND ? \n");
+                sql.append("AND us.user_id != ? \n"); 
+            }
 
-	        List<Object> params = new ArrayList<>();
-	        params.add(userId); // 자신의 ID를 제외하기 위해 추가
+            sql.append(") AS friend_data \n");
+            sql.append("ON u.user_id = friend_data.user_id \n");
+            sql.append("ORDER BY friend_data.year_diff ASC;"); 
+            
+            pstmt = conn.prepareStatement(sql.toString());
 
-	        for (int i = 0; i < schoolSummaryList.size(); i++) {
-	            if (i > 0) queryBuilder.append(" UNION ");
-	            queryBuilder.append("SELECT u.user_id, u.nickname, u.bio, u.name, u.gender, u.birth, u.profile_picture, ")
-	                        .append("ABS(us.grad_year - ?) AS grad_diff ")
-	                        .append("FROM user u ")
-	                        .append("JOIN user_school us ON u.user_id = us.user_id ")
-	                        .append("WHERE u.user_id != ? AND us.school_name = ? AND us.grad_year BETWEEN ? AND ? ");
-	            
-	            // 각 학업 정보에 대해 조건 추가
-	            params.add(schoolSummaryList.get(i).getGradYear()); // grad_diff 계산용
-	            params.add(userId); // 자신의 ID 제외
-	            params.add(schoolSummaryList.get(i).getSchoolName()); // 학교 이름
-	            params.add(schoolSummaryList.get(i).getGradYear() - gap); // 최소 졸업 연도
-	            params.add(schoolSummaryList.get(i).getGradYear() + gap); // 최대 졸업 연도
-	        }
+            // 동적으로 바인딩할 파라미터 설정하기
+            int paramIndex = 1;
+            for (UserSchoolSummaryDTO school : schoolSummaryList) {
+                pstmt.setInt(paramIndex++, school.getGradYear()); // grad_year 비교용
+                pstmt.setString(paramIndex++, school.getSchoolName()); // school_name 조건
+                pstmt.setInt(paramIndex++, school.getGradYear() - gap); // grad_year 범위 시작
+                pstmt.setInt(paramIndex++, school.getGradYear() + gap); // grad_year 범위 끝
+                pstmt.setInt(paramIndex++, userId); // 자기 자신 제외
+            }
 
-	        queryBuilder.append(") ORDER BY grad_diff ASC");
+            rset = pstmt.executeQuery();
 
-	        // SQL 실행
-	        pstmt = conn.prepareStatement(queryBuilder.toString());
+            // 결과 리스트에 추가하기
+            while (rset.next()) {
+                FriendInfoListDTO friend = new FriendInfoListDTO(
+                        rset.getInt("user_id"),
+                        rset.getString("nickname"),
+                        rset.getString("bio"),
+                        rset.getString("name"),
+                        rset.getString("gender").charAt(0),
+                        rset.getDate("birth").toLocalDate(),
+                        rset.getString("profile_picture")
+                );
+                list.add(friend);
+            }
+        } finally {
+            DBUtil.close(conn, pstmt, rset);
+        }
 
-	        // 파라미터 세팅
-	        for (int i = 0; i < params.size(); i++) {
-	            if (params.get(i) instanceof Integer) {
-	                pstmt.setInt(i + 1, (Integer) params.get(i));
-	            } else if (params.get(i) instanceof String) {
-	                pstmt.setString(i + 1, (String) params.get(i));
-	            }
-	        }
+        return list;
+    }
 
-	        rset = pstmt.executeQuery();
-
-	        while (rset.next()) {
-	            FriendInfoListDTO friend = new FriendInfoListDTO(
-	                rset.getInt("user_id"),
-	                rset.getString("nickname"),
-	                rset.getString("bio"),
-	                rset.getString("name"),
-	                rset.getString("gender").charAt(0),
-	                rset.getDate("birth").toLocalDate(),
-	                rset.getString("profile_picture")
-	            );
-	            friendList.add(friend);
-	        }
-		} finally {
-			DBUtil.close(conn, pstmt, rset);
-		}
-		
-		return list;
-	}
 }
