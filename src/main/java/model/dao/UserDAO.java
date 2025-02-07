@@ -3,6 +3,7 @@ package model.dao;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import model.dto.UserDTO;
@@ -10,18 +11,46 @@ import util.DBUtil;
 
 public class UserDAO {
 	// 회원 정보 가져오기
-	UserDTO getUserByUserId(UserDTO user) throws SQLException {
+	public UserDTO getUserByUserId(int userId) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try{
+			conn =DBUtil.getConnection();
+			pstmt = conn.prepareStatement("SELECT * FROM user WHERE user_id = ?");
+			pstmt.setInt(1, userId);
+			
+			// 가져온 유저 객체 생성
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            if (rs.next()) {
+	                return new UserDTO(
+	                    rs.getInt("user_id"),
+	                    rs.getString("email"),
+	                    rs.getString("pwd"),
+	                    rs.getString("nickname"),
+	                    rs.getString("bio"),
+	                    rs.getString("name"),
+	                    rs.getString("gender").charAt(0),  // CHAR(1) 타입 변환
+	                    rs.getString("phone"),
+	                    rs.getDate("birth").toLocalDate(), // java.sql.Date → LocalDate 변환
+	                    rs.getString("profile_picture"),
+	                    rs.getInt("point")
+	                );
+	            }
+	        }
+		} finally {
+			DBUtil.close(conn, pstmt);
+		}
 		return null;
 	}
 	
 	// 회원 추가
-	boolean addUser(UserDTO user) throws SQLException {
+	public boolean addUser(UserDTO user) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
 		try {
 			conn = DBUtil.getConnection();
-			
 			pstmt = conn.prepareStatement("INSERT INTO user (email, pwd, nickname, bio, name, gender, phone, birth, profile_picture, point)"
 					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			
