@@ -23,4 +23,16 @@ public class ActionFactory {
 
 		return action;
 	}
+	
+	public Action getSignUpAction(String command) {
+		Action action = null;
+		
+		if(command.equals("login")) {
+			
+		}else if(command.equals("signup")) {
+			action = new ViewSignUpAction();
+		}
+		
+		return action;
+	}
 }
