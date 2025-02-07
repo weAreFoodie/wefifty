@@ -35,8 +35,27 @@ public class FriendRequestDAO {
 	}
 	
 	// 친구 요청 정보 변경하기(수락, 거절)
-	void updateFriendRequest(int requestId) {
+	public static boolean updateFriendRequest(int requestId, char status) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
 		
+		try {
+			conn = DBUtil.getConnection();
+			
+			pstmt = conn.prepareStatement("update friend_request set status=? where id=?");
+			
+			pstmt.setInt(1, status);
+			pstmt.setInt(2, requestId);
+			
+			if (pstmt.executeUpdate() != 0) {
+				return true;
+			}
+
+		} finally {
+			DBUtil.close(conn, pstmt);
+		}
+		
+		return false;
 	}
 	
 	// 해당 회원 친구 요청 목록 가져오기
