@@ -2,7 +2,9 @@ package model.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import model.dto.FriendRequstDTO;
@@ -59,8 +61,37 @@ public class FriendRequestDAO {
 	}
 	
 	// 해당 회원 친구 요청 목록 가져오기
-	List<FriendRequstDTO> findFriendRequestsByUserId(int userId) {
-		return null;
+	public static ArrayList<FriendRequstDTO> findFriendRequestsBySenderId(int userId) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ArrayList<FriendRequstDTO> requestList = null;
+		
+		try {
+			conn = DBUtil.getConnection();
+			
+			pstmt = conn.prepareStatement("select * from friend_request where sender_id=?");
+			pstmt.setInt(1, userId);
+			
+			rs = pstmt.executeQuery();
+			
+			requestList = new ArrayList<>();
+			while(rs.next()) {
+				requestList.add( FriendRequstDTO.builder()
+									.id(rs.getInt("id"))
+									.senderId(rs.getInt("sender_id"))
+									.receiverId(rs.getInt("receiver_id"))
+									.status(rs.getString("status").charAt(0))
+									.build()
+						);
+			}
+			
+		} finally {
+			DBUtil.close(conn, pstmt, rs);
+		}
+		
+
+		return requestList;
 	}
 	
 	// 같은 학교, 졸업 년도(gap) 친구 목록 받아오기
