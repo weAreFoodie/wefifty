@@ -26,7 +26,7 @@
             <img src="images/wefifty_logo.png" alt="">
         </a>
         
-        <button onclick="loadView('profile', profileScipt)" class="flex flex-col items-center">
+        <button onclick="loadView('profile', profileScript)" class="flex flex-col items-center">
             <img src="https://placehold.co/40" class="w-10 h-10 rounded-full border-2 border-white" alt="User profile avatar">
             <p class="text-sm text-white mt-1">김철수 님</p>
         </button>
@@ -46,7 +46,7 @@
     
     
     <!-- ### MainView ### -->
-    <div id="home-mainView" class="flex flex-row justify-center items-center w-screen h-screen overflow-hidden bg-gray-100 relative">
+    <div id="home-mainView" class=" w-screen h-screen ">
        
     </div>
    
