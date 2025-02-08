@@ -36,6 +36,10 @@ CREATE TABLE friend_request (
     CONSTRAINT unique_friend_request UNIQUE (sender_id, receiver_id)
 );
 
+-- migrate sql
+ALTER TABLE user 
+ADD CONSTRAINT chk_point CHECK (point >= 0);
+
 
 -- drop table user_school;
 -- drop table friend_request;
