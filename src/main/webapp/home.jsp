@@ -18,7 +18,7 @@
 </head>
 <body class="bg-gray-100 flex min-h-screen">
 
-        <!-- Sidebar -->
+    <!-- ### Sidebar ### -->
     <aside class="bg-black flex flex-col items-center py-6 space-y-6 sidebar">
     
     
@@ -26,17 +26,17 @@
             <img src="images/wefifty_logo.png" alt="">
         </a>
         
-        <button onclick="loadView('profile')" class="flex flex-col items-center">
+        <button onclick="loadView('profile', profileScipt)" class="flex flex-col items-center">
             <img src="https://placehold.co/40" class="w-10 h-10 rounded-full border-2 border-white" alt="User profile avatar">
             <p class="text-sm text-white mt-1">김철수 님</p>
         </button>
         
-        <button onclick="loadView('recommend')" class="flex flex-col items-center text-white sidebar-btn">
+        <button onclick="loadView('recommend', recommendScript)" class="flex flex-col items-center text-white sidebar-btn">
             <i class="fas fa-search fa-2x"></i>
             <span class="text-xs mt-1">친구 찾기</span>
         </button>
         
-        <button onclick="loadView('friendList')" class="flex flex-col items-center text-white sidebar-btn">
+        <button onclick="loadView('friendList', friendListScript)" class="flex flex-col items-center text-white sidebar-btn">
             <i class="fas fa-users fa-2x"></i>
             <span class="text-xs mt-1">친구 목록</span>
         </button>
@@ -45,7 +45,7 @@
     </aside>
     
     
-    <!-- MainView -->
+    <!-- ### MainView ### -->
     <div id="home-mainView" class="flex flex-row justify-center items-center w-screen h-screen overflow-hidden bg-gray-100 relative">
        
     </div>
