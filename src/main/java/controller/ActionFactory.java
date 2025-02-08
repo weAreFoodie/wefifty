@@ -2,6 +2,7 @@ package controller;
 
 import controller.action.Action;
 import controller.action.FriendRequestAction;
+import controller.action.GetFriendListAction;
 
 public class ActionFactory {
 	private static ActionFactory instance = new ActionFactory();
@@ -17,8 +18,8 @@ public class ActionFactory {
 
 		if (command.equals("FriendRequest")) {
 			action = new FriendRequestAction();
-		} else if (command.equals("")) {
-
+		} else if (command.equals("GetFriendList")) {
+			action = new GetFriendListAction();
 		}
 
 		return action;
