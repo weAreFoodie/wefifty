@@ -34,7 +34,7 @@
 								<p class="text-sm mb-1">청운대학교 5기 졸업생 모여라</p>
 								<h2 class="text-2xl font-semibold">청운대학교 친구입니다.</h2>
 							</div>
-							<button class="add-member-btn bg-white text-gray-800 px-4 py-2 flex items-center space-x-2 rounded-lg shadow-lg">
+							<button onclick="friendRequest(1,4)" class="add-member-btn bg-white text-gray-800 px-4 py-2 flex items-center space-x-2 rounded-lg shadow-lg">
 								<i class="fas fa-question-circle"></i> 
 								<span class="font-medium">
 									친구 정보 확인
