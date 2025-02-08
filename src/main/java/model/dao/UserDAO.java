@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import model.dto.UserDTO;
 import util.DBUtil;
@@ -52,7 +53,8 @@ public class UserDAO {
 		try {
 			conn = DBUtil.getConnection();
 			pstmt = conn.prepareStatement("INSERT INTO user (email, pwd, nickname, bio, name, gender, phone, birth, profile_picture, point)"
-					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS);
 			
 			pstmt.setString(1, user.getEmail());
 			pstmt.setString(2, user.getPwd());
@@ -64,12 +66,13 @@ public class UserDAO {
 			pstmt.setDate(8, Date.valueOf(user.getBirth()));  // LocalDate → java.sql.Date 변환
 			pstmt.setString(9, user.getProfilePicture());
 			pstmt.setInt(10, 10000);
-			System.out.println("addUser()");
+			System.out.println("addUser() 실행");
 
 			if(pstmt.executeUpdate() != 0) {
 				// db에 저장된 결과 값 가져오기
 				ResultSet rs = pstmt.getGeneratedKeys();
 				if(rs.next()) {
+					System.out.println("생성된 회원 ID 값 : " + rs.getInt(1));
 					return rs.getInt(1); // 생성된 userId 반환
 				}
 			}
@@ -131,6 +134,23 @@ public class UserDAO {
 		
 		return false;
 	}
+	
+	// 중복 체크
+	public static boolean isEmailExists(String email) throws SQLException {
+	    String sql = "SELECT COUNT(*) FROM user WHERE email = ?";
+	    try (Connection conn = DBUtil.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        
+	        pstmt.setString(1, email);
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            if (rs.next() && rs.getInt(1) > 0) {
+	                return true; // 이메일이 이미 존재함
+	            }
+	        }
+	    }
+	    return false; // 이메일이 존재하지 않음
+	}
+
 	
 
 }

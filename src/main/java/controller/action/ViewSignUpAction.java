@@ -38,6 +38,20 @@ public class ViewSignUpAction implements Action{
 				.profilePicture(request.getParameter("profilePicture"))
 				.build();
 		
+        // 🔥 이메일 중복 확인
+        if (UserDAO.isEmailExists(request.getParameter("email"))) {
+            request.setAttribute("errorMsg", "이미 가입된 이메일입니다.");
+            request.getRequestDispatcher(url).forward(request, response);
+            return;
+        }
+
+        // 🔥 비밀번호 확인 로직 추가
+        if (!request.getParameter("pwd").equals(request.getParameter("confirmPwd"))) {
+            request.setAttribute("errorMsg", "비밀번호가 일치하지 않습니다.");
+            request.getRequestDispatcher(url).forward(request, response);
+            return;
+        }
+		
 				
 		
 		// user 입력 데이터가 비어 있지 않으면

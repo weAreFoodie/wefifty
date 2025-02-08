@@ -30,7 +30,7 @@ public class UserSchoolDAO {
 	
 	// 유저 학교 정보 집어넣기
 	public static boolean insertUserSchools(int userId, List<UserSchoolDTO> schoolList) {
-	    String sql = "INSERT INTO userSchool (user_id, school_name, grad_year, school_type) VALUES (?, ?, ?, ?)";
+	    String sql = "INSERT INTO user_school (user_id, school_name, grad_year, school_type) VALUES (?, ?, ?, ?)";
 
 	    try (Connection conn = DBUtil.getConnection();
 	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
