@@ -63,7 +63,8 @@ public class UserDAO {
 			pstmt.setString(7, user.getPhone());
 			pstmt.setDate(8, Date.valueOf(user.getBirth()));  // LocalDate → java.sql.Date 변환
 			pstmt.setString(9, user.getProfilePicture());
-			pstmt.setInt(10, user.getPoint());
+			pstmt.setInt(10, 10000);
+			System.out.println("addUser()");
 
 			if(pstmt.executeUpdate() != 0) {
 				// db에 저장된 결과 값 가져오기

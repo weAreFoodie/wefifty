@@ -30,6 +30,7 @@ public class ViewSignUpAction implements Action{
 				.email(request.getParameter("email"))
 				.pwd(hashedPassword)
 				.nickname(request.getParameter("nickname"))
+				.name(request.getParameter("name"))
 				.bio(request.getParameter("bio"))
 				.gender(request.getParameter("gender").charAt(0)) // String -> char 갑 변환
 				.phone(request.getParameter("phone"))
