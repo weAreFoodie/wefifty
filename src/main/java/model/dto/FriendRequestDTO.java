@@ -13,7 +13,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Builder
-public class FriendRequstDTO {
+public class FriendRequestDTO {
 	private int id;
 	private int senderId;
 	private int receiverId;
