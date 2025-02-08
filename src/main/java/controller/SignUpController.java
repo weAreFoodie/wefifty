@@ -15,13 +15,17 @@ public class SignUpController extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		
 		String command = request.getParameter("command");
-		if(command == null) {
-			command = "login";
+		System.out.println("signUpController" + command);
+
+		
+		if (command == null || !command.equals("signup")) {
+		    response.sendRedirect("error.jsp"); // 또는 적절한 에러 페이지로 이동
+		    return;
 		}
 		
 		ActionFactory af = ActionFactory.getInstance();
 		
-		Action action = af.getHomeAction(command);
+		Action action = af.getSignUpAction(command);
 		action.execute(request, response);
 	}
 

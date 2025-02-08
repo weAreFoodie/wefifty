@@ -29,12 +29,13 @@ public class UserSchoolDAO {
 	}
 	
 	// 유저 학교 정보 집어넣기
-	public static void insertUserSchools(int userId, List<UserSchoolDTO> schoolList) {
+	public static boolean insertUserSchools(int userId, List<UserSchoolDTO> schoolList) {
 	    String sql = "INSERT INTO userSchool (user_id, school_name, grad_year, school_type) VALUES (?, ?, ?, ?)";
 
 	    try (Connection conn = DBUtil.getConnection();
 	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
+	    	// 학교들 저장
 	        for (UserSchoolDTO school : schoolList) {
 	            pstmt.setInt(1, userId);
 	            pstmt.setString(2, school.getSchoolName());
@@ -45,9 +46,11 @@ public class UserSchoolDAO {
 	        }
 
 	        pstmt.executeBatch();  // 배치 실행
+	        return true;
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
+	    return false;
 	}
 
 }

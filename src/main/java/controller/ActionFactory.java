@@ -1,6 +1,7 @@
 package controller;
 
 import controller.action.Action;
+import controller.action.ViewSignUpAction;
 
 public class ActionFactory {
 	private static ActionFactory instance = new ActionFactory();
