@@ -23,4 +23,5 @@ public class FriendInfoDTO {
 	private char gender;
 	private LocalDate birth;
 	private String profilePicture;
+	private String schoolName;  // 추천 로직에서 추천의 근거가 된 학교이름(회원의 학교이름과 같은 친구의 학교이름)
 }
