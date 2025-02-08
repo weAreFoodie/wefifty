@@ -13,6 +13,7 @@ async function ajaxRequest(method, query) {
            } else if (this.readyState == 4 && this.status === 400) {
 				reject(new Error(this.responseText));
 		   }
+		   // TODO 400이 아닌 경우에도 에러 처리
        };
        xhttp.open(method, query);
        xhttp.send();
@@ -92,6 +93,16 @@ function profileScript() {
 
 function friendListScript() {
 	console.log("friendListScript");
+	
+	const homeMainView = document.getElementById("home-mainView");
+	
+	// 서블릿 부르기
+	ajaxRequest("POST", "home?command=GetFriendList")
+	.then((succ) => {
+		homeMainView.innerHTML = succ; // 성공일 시 페이지 교체
+	}).catch((err) => {
+		Swal.fire("요청 실패", err.message, "error");  // 실패일 시 팝업 띄우기
+	})
 }
 
 function recommendScript() {
@@ -121,4 +132,19 @@ document.addEventListener("DOMContentLoaded", function() {
 	
 });
 
+// 친구 목록 검색
+function filterFriends() {
+	let input = document.getElementById("searchInput").value.toLowerCase();
+	let rows = document.querySelectorAll("#friendTable tbody tr");
+
+	rows.forEach(row => {
+		let name = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+
+		if (name.includes(input)) {
+			row.style.display = "";
+		} else {
+			row.style.display = "none";
+		}
+	});
+}
 

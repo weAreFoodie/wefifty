@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import model.dto.FriendDTO;
 import model.dto.FriendRequestDTO;
+import model.dto.UserDTO;
 import util.DBUtil;
 
 public class FriendRequestDAO {
@@ -156,6 +158,65 @@ public class FriendRequestDAO {
 		
 		
 		return false;
+	}
+	
+	// 친구 목록 가져오기 - 요청 보내고 받은 목록 중 - 내가 보내거나 받은 목록 중 - 수락된 목록
+	public static ArrayList<FriendDTO> findFriendListByUserId(int userId) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ArrayList<FriendDTO> requestList = null;
+		
+		try {
+			conn = DBUtil.getConnection();
+			
+			String q ="select user.user_id, name, profile_picture, gender, phone, email\r\n"
+					+ "from\r\n"
+					+ "(\r\n"
+					+ "	select\r\n"
+					+ "		sender_id as user_id\r\n"
+					+ "	from\r\n"
+					+ "		friend_request\r\n"
+					+ "	where\r\n"
+					+ "		receiver_id = ?\r\n"
+					+ "		and status = 'a'\r\n"
+					+ "union\r\n"
+					+ "	select\r\n"
+					+ "		receiver_id as user_id\r\n"
+					+ "	from\r\n"
+					+ "		friend_request\r\n"
+					+ "	where\r\n"
+					+ "		sender_id = ?\r\n"
+					+ "		and status = 'a') as friends\r\n"
+					+ "join\r\n"
+					+ "user\r\n"
+					+ "where\r\n"
+					+ "	user.user_id = friends.user_id;";
+			
+			pstmt = conn.prepareStatement(q);
+			pstmt.setInt(1, userId);
+			pstmt.setInt(2, userId);
+			
+			rs = pstmt.executeQuery();
+			
+			requestList = new ArrayList<>();
+			while(rs.next()) {
+				requestList.add( FriendDTO.builder()
+						.userId(rs.getInt("user_id"))
+						.email(rs.getString("email"))
+						.name(rs.getString("name"))
+						.gender(rs.getString("gender").charAt(0))
+						.phone(rs.getString("phone"))
+						.profilePicture(rs.getString("profile_picture"))
+						.build()
+						);
+			}
+			
+		} finally {
+			DBUtil.close(conn, pstmt, rs);
+		}
+		
+		return requestList;
 	}
 	
 }
