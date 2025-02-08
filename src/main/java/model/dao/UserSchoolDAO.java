@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.dto.FriendInfoListDTO;
+import model.dto.FriendInfoDTO;
 import model.dto.UserSchoolDTO;
 import model.dto.UserSchoolSummaryDTO;
 import util.DBUtil;
@@ -147,25 +147,25 @@ public class UserSchoolDAO {
 	}
 	
 	// (학교이름, 졸업년도), 범위값, 유저 아이디 로 해당 범위에 있는 회원의 특정 user 정보 받아오기
-	public static ArrayList<FriendInfoListDTO> findFriendsBySchoolAndGradYear(ArrayList<UserSchoolSummaryDTO> schoolSummaryList, int gap, int userId) throws SQLException {
+	public static ArrayList<FriendInfoDTO> findFriendsBySchoolAndGradYear(ArrayList<UserSchoolSummaryDTO> schoolSummaryList, int gap, int userId) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rset = null;
-        ArrayList<FriendInfoListDTO> list = new ArrayList<>();
+        ArrayList<FriendInfoDTO> list = new ArrayList<>();
         
         try {
             conn = DBUtil.getConnection();
             
             // SQL 쿼리 동적 생성하기
             StringBuilder sql = new StringBuilder();
-            sql.append("SELECT u.user_id, u.nickname, u.bio, u.name, u.gender, u.birth, u.profile_picture, friend_data.year_diff \n");
+            sql.append("SELECT u.user_id, u.nickname, u.bio, u.name, u.gender, u.birth, u.profile_picture, friend_data.year_diff, friend_data.school_name \n");
             sql.append("FROM user u \n");
             sql.append("JOIN (\n");
 
             for (int i = 0; i < schoolSummaryList.size(); i++) {
                 if (i > 0) sql.append(" UNION \n"); // 여러 개의 (학교이름, 졸업년도) 조건을 UNION으로 합치기
                 
-                sql.append("SELECT us.user_id, ABS(CAST(us.grad_year AS SIGNED) - ?) AS year_diff \n");
+                sql.append("SELECT us.user_id, ABS(CAST(us.grad_year AS SIGNED) - ?) AS year_diff, us.school_name \n");
                 sql.append("FROM user_school us \n");
                 sql.append("WHERE us.school_name = ? \n");
                 sql.append("AND us.grad_year BETWEEN ? AND ? \n");
@@ -192,14 +192,15 @@ public class UserSchoolDAO {
 
             // 결과 리스트에 추가하기
             while (rset.next()) {
-                FriendInfoListDTO friend = new FriendInfoListDTO(
+                FriendInfoDTO friend = new FriendInfoDTO(
                         rset.getInt("user_id"),
                         rset.getString("nickname"),
                         rset.getString("bio"),
                         rset.getString("name"),
                         rset.getString("gender").charAt(0),
                         rset.getDate("birth").toLocalDate(),
-                        rset.getString("profile_picture")
+                        rset.getString("profile_picture"),
+                        rset.getString("school_name")
                 );
                 list.add(friend);
             }

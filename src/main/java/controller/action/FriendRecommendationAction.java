@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.dao.UserDAO;
 import model.dao.UserSchoolDAO;
-import model.dto.FriendInfoListDTO;
+import model.dto.FriendInfoDTO;
 import model.dto.UserSchoolDTO;
 import model.dto.UserSchoolSummaryDTO;
 
@@ -35,7 +35,7 @@ public class FriendRecommendationAction implements Action {
 			int gap = 2;
 			
 			// (학교이름, 졸업년도) 범위값, 유저 아이디 로 해당 범위에 있는 회원의 특정 user 정보 받아오기
-			ArrayList<FriendInfoListDTO> list = UserSchoolDAO.findFriendsBySchoolAndGradYear(schoolSummaryList, gap, userId);
+			ArrayList<FriendInfoDTO> list = UserSchoolDAO.findFriendsBySchoolAndGradYear(schoolSummaryList, gap, userId);
 			
 			if (list == null) {
 				request.setAttribute("errorMsg", "가능한 친구 추천이 없습니다.");
