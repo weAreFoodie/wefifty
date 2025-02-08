@@ -15,7 +15,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Builder
-public class FriendInfoListDTO {
+public class FriendInfoDTO {
 	private int userId;
 	private String nickname;
 	private String bio;
