@@ -1,18 +1,17 @@
 package model.dao;
 
-import java.beans.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import model.dto.FriendRequstDTO;
+import model.dto.FriendRequestDTO;
 import util.DBUtil;
 
 public class FriendRequestDAO {
 	// 친구 요청 정보 추가하기
-	public static boolean addFriendRequest(FriendRequstDTO friendRequestDTO) throws SQLException {
+	public static boolean addFriendRequest(FriendRequestDTO friendRequestDTO) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt1 = null;
 		PreparedStatement pstmt2 = null;
@@ -71,11 +70,11 @@ public class FriendRequestDAO {
 	}
 	
 	// 해당 회원 친구 요청 목록 가져오기
-	public static ArrayList<FriendRequstDTO> findFriendRequestsBySenderId(int userId) throws SQLException {
+	public static ArrayList<FriendRequestDTO> findFriendRequestsBySenderId(int userId) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		ArrayList<FriendRequstDTO> requestList = null;
+		ArrayList<FriendRequestDTO> requestList = null;
 		
 		try {
 			conn = DBUtil.getConnection();
@@ -87,7 +86,7 @@ public class FriendRequestDAO {
 			
 			requestList = new ArrayList<>();
 			while(rs.next()) {
-				requestList.add( FriendRequstDTO.builder()
+				requestList.add( FriendRequestDTO.builder()
 									.id(rs.getInt("id"))
 									.senderId(rs.getInt("sender_id"))
 									.receiverId(rs.getInt("receiver_id"))
@@ -104,11 +103,11 @@ public class FriendRequestDAO {
 		return requestList;
 	}
 	
-	public static ArrayList<FriendRequstDTO> findFriendRequestsByReceiverId(int userId) throws SQLException {
+	public static ArrayList<FriendRequestDTO> findFriendRequestsByReceiverId(int userId) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		ArrayList<FriendRequstDTO> requestList = null;
+		ArrayList<FriendRequestDTO> requestList = null;
 		
 		try {
 			conn = DBUtil.getConnection();
@@ -120,7 +119,7 @@ public class FriendRequestDAO {
 			
 			requestList = new ArrayList<>();
 			while(rs.next()) {
-				requestList.add( FriendRequstDTO.builder()
+				requestList.add( FriendRequestDTO.builder()
 						.id(rs.getInt("id"))
 						.senderId(rs.getInt("sender_id"))
 						.receiverId(rs.getInt("receiver_id"))

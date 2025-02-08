@@ -7,7 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.dao.FriendRequestDAO;
-import model.dto.FriendRequstDTO;
+import model.dto.FriendRequestDTO;
 
 public class FriendRequestAction implements Action {
 	@Override
@@ -17,7 +17,7 @@ public class FriendRequestAction implements Action {
 		try {
 			request.setAttribute("result-friendRequest", 
 					FriendRequestDAO.addFriendRequest(
-							FriendRequstDTO.builder()
+							FriendRequestDTO.builder()
 								.senderId(Integer.parseInt(request.getParameter("senderId")))
 								.receiverId(Integer.parseInt(request.getParameter("receiverId")))
 								.status('p')
