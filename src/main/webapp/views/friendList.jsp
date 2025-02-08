@@ -2,17 +2,18 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<div class="flex justify-between items-center mb-6">
+<div class="flex justify-between items-center mb-6 mx-16 my-12">
 	<h1 class="text-2xl font-bold">친구 목록</h1>
 	<div class="flex space-x-4">
 		<input type="text" id="searchInput" onkeyup="filterFriends()"
 			placeholder="친구 이름으로 검색" class="px-4 py-2 border rounded-md w-80">
 		<button onclick="friendListScript()"
 			class="bg-green-500 text-white px-4 py-2 rounded-md">새로고침</button>
+			<!-- TODO 새로고침시 피드백 추가 (로딩..?) -->
 	</div>
 </div>
 
-<div class="bg-white shadow-md rounded-lg overflow-hidden">
+<div class="bg-white shadow-md rounded-lg overflow-hidden mx-24 my-8">
 	<table id="friendTable" class="w-full text-left border-collapse">
 		<thead class="bg-gray-200">
 			<tr>
@@ -25,6 +26,7 @@
 		</thead>
 		<tbody>
 			<c:forEach items="${requestScope.friendList}" var="friend">
+				<!-- TODO 이름 클릭 시 카드 띄우기 -->
 				<tr class="border-t hover:bg-gray-100">
 					<td class="p-3 flex items-center space-x-3"><img
 						src="https://placehold.co/40" class="w-10 h-10 rounded-full"
