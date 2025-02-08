@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import model.dto.FriendDTO;
-import model.dto.FriendRequstDTO;
+import model.dto.FriendRequestDTO;
 import model.dto.UserDTO;
 import util.DBUtil;
 
