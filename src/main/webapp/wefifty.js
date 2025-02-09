@@ -1,3 +1,39 @@
+// [동적 CSS 주입 시작] - Swiper 네비게이션 버튼 영역 축소 및 스타일 지정
+(function() {
+  const style = document.createElement('style');
+  style.textContent = `
+  		.swiper-button-next, .swiper-button-prev {
+			position: absolute;
+  	        font-size: 50px !important; 
+  	        width: 80px !important;     
+  	        height: 160px !important;    
+  	        display: flex !important;   
+  	        align-items: center;
+  	        justify-content: center;
+  	        z-index: 1000 !important;     
+      	}
+
+  	    .swiper-button-next::after, .swiper-button-prev::after {
+  	        font-size: 50px !important;  
+  	        color: rgba(0, 0, 0, 0.5) !important;    
+  	        font-weight: bold;
+  	    }    
+  	    
+  	    .swiper-button-next {
+  	        right: 20px !important;
+			top: 50% !important;          
+			transform: translate(600%, -50%) !important; 
+  	    }
+
+  	    .swiper-button-prev {
+  	        left: 20px !important;
+			top: 50% !important;
+			transform: translate(0%, -50%) !important;
+  	    }
+  `;
+  document.head.appendChild(style);
+})();
+
 async function ajaxRequest(method, query, postData = null) {
   return new Promise((resolve, reject) => {
     const xhttp = new XMLHttpRequest();
@@ -37,12 +73,13 @@ function friendRequest(senderId, receiverId) {
 		
 		// 확인 클릭 시
 		if (result.isConfirmed) {
+			const data = new URLSearchParams();
+			data.append("senderId", senderId);
+			data.append("receiverId", receiverId);
 			
 			// controller Action 호출
-			ajaxRequest (
-				"POST", 
-				"home?command=FriendRequest&senderId=" + senderId +"&receiverId=" + receiverId
-			).then((succ) => {
+			ajaxRequest ("POST", "home?command=FriendRequest", data.toString())
+			.then((succ) => {
 				// 정상 응답 시
 				Swal.fire("요청 완료!", "친구 요청이 성공적으로 전송되었습니다.", "success");
 			}).catch((err) => {
@@ -103,48 +140,7 @@ function friendListScript() {
 	})
 }
 
-function recommendScript() {
-	console.log("recommendScript loaded");
-	
-	// 캐러셀 생성
-	new Swiper(".swiper-container", {
-		loop: false,
-		spaceBetween: 20,
-		slidesPerView: 1,
-		pagination: {
-			el: ".swiper-pagination",
-			clickable: true,
-		},
-		navigation: {
-			nextEl: ".swiper-button-next",
-			prevEl: ".swiper-button-prev",
-		},
-	});
-}
 
-document.addEventListener("DOMContentLoaded", function() {
-	console.log('page onLoad');
-	
-	// default view load
-	loadView("recommend", recommendScript);
-	
-});
-
-// 친구 목록 검색
-function filterFriends() {
-	let input = document.getElementById("searchInput").value.toLowerCase();
-	let rows = document.querySelectorAll("#friendTable tbody tr");
-
-	rows.forEach(row => {
-		let name = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
-
-		if (name.includes(input)) {
-			row.style.display = "";
-		} else {
-			row.style.display = "none";
-		}
-	});
-}
 
 // 포인트 충전
 function pointChargingScript() {
@@ -217,4 +213,70 @@ function chargePoints(amount) {
         .catch((err) => {
             Swal.fire("요청 실패", err.message, "error");
         });
+}
+
+// 친구 추천
+function loadFriendRecommendation() {
+  const homeMainView = document.getElementById("home-mainView");
+  ajaxRequest("POST", "home?command=friendRecommendation")
+    .then((succ) => {
+      // 서버에서 FriendRecommendationAction이 실행되어, 추천 데이터를 담은 recommendation.jsp가 반환됨
+      homeMainView.innerHTML = succ;
+      initRecommendationView(); // Swiper 초기화 및 이벤트 등록 함수
+    })
+    .catch((err) => {
+      Swal.fire("요청 실패", err.message, "error");
+    });
+}
+
+function initRecommendationView() {
+	console.log("initRecommendationView");
+	// Swiper 초기화 (Swiper v11 사용에 맞게)
+	new Swiper(".swiper-container", {
+		loop: false,
+		spaceBetween: 20,
+		slidesPerView: 1,
+		pagination: {
+			el: ".swiper-pagination",
+			clickable: true,
+		},
+		navigation: {
+			nextEl: ".swiper-button-next",
+			prevEl: ".swiper-button-prev",
+		},
+	});
+	
+	// AJAX로 로드된 추천 화면의 친구 요청 버튼에 이벤트 등록
+	document.querySelectorAll(".add-member-btn").forEach(button => {
+		button.addEventListener("click", function(e) {
+			// 이벤트 전파 중지: 슬라이드 제스처가 실행되지 않도록 함.
+			e.stopPropagation();
+			
+			const receiverId = this.getAttribute("data-userid");
+			const senderId = currentUserId;
+		    console.log(senderId);
+			friendRequest(senderId, receiverId); // 친구 요청 실행
+		});
+	});
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+	console.log('page onLoad');
+	// 기본 뷰로 친구 추천 화면을 로드, 초기화 함수로 initRecommendationView 호출
+	loadFriendRecommendation();
+});
+
+// 친구 목록 검색
+function filterFriends() {
+	let input = document.getElementById("searchInput").value.toLowerCase();
+	let rows = document.querySelectorAll("#friendTable tbody tr");
+
+	rows.forEach(row => {
+		let name = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+		if (name.includes(input)) {
+			row.style.display = "";
+		} else {
+			row.style.display = "none";
+		}
+	});
 }
