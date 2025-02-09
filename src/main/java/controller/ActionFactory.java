@@ -1,6 +1,7 @@
 package controller;
 
 import controller.action.Action;
+import controller.action.FriendRecommendationAction;
 import controller.action.ViewSignUpAction;
 import controller.action.FriendRequestAction;
 import controller.action.GetFriendListAction;
@@ -38,6 +39,8 @@ public class ActionFactory {
             action = new PaymentAction();
         } else if (command.equals("pointCharging")) {
             action = new PointChargingAction();
+        } else if (command.equals("friendRecommendation")) {
+        	action = new FriendRecommendationAction();
         }
 
 		return action;

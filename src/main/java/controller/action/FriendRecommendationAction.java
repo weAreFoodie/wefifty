@@ -8,10 +8,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import model.dao.UserDAO;
 import model.dao.UserSchoolDAO;
 import model.dto.FriendInfoDTO;
-import model.dto.UserSchoolDTO;
 import model.dto.UserSchoolSummaryDTO;
 
 public class FriendRecommendationAction implements Action {
@@ -22,6 +20,9 @@ public class FriendRecommendationAction implements Action {
 		// 세션에 저장된 userId 가져오기
 		HttpSession session = request.getSession();
 		int userId = (Integer) session.getAttribute("userIdkey");
+		
+		// FIXME 테스트용
+//		int userId = 1;
 		
 		try {
 			// 해당 userId의 (학교 이름, 졸업년도) 리스트 받아오기 (회원이 속한 학교들의 이름과 졸업년도 받아오기)
@@ -44,7 +45,7 @@ public class FriendRecommendationAction implements Action {
 				} 
 			}
 			request.setAttribute("resultFriendRecommendation", list);
-			url = "views/recommend.jsp";
+			url = "views/recommendation.jsp";
 		} catch (SQLException e) {  // (error 화면)으로 이동
 			response.setStatus(400);
 			request.setAttribute("errorMsg", "친구 추천 요청 중에 문제가 발생했어요.");
