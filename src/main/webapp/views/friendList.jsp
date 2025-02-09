@@ -8,7 +8,7 @@
 		<input type="text" id="searchInput" onkeyup="filterFriends()"
 			placeholder="친구 이름으로 검색" class="px-4 py-2 border rounded-md w-80">
 		<button onclick="friendListScript()"
-			class="bg-green-500 text-white px-4 py-2 rounded-md">새로고침</button>
+			class="bg-blue-500 text-white px-4 py-2 rounded-md">새로고침</button>
 			<!-- TODO 새로고침시 피드백 추가 (로딩..?) -->
 	</div>
 </div>
