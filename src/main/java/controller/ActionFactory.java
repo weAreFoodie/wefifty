@@ -1,6 +1,7 @@
 package controller;
 
 import controller.action.Action;
+import controller.action.ViewSignUpAction;
 import controller.action.FriendRequestAction;
 import controller.action.GetFriendListAction;
 
@@ -22,6 +23,18 @@ public class ActionFactory {
 			action = new GetFriendListAction();
 		}
 
+		return action;
+	}
+	
+	public Action getSignUpAction(String command) {
+		Action action = null;
+		
+		if(command.equals("login")) {
+			
+		}else if(command.equals("signup")) {
+			action = new ViewSignUpAction();
+		}
+		
 		return action;
 	}
 }
