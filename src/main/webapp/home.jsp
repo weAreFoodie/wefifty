@@ -48,6 +48,12 @@
         
     </aside>
     
+    <!-- sessionScope.userIdKey 체크 후 null일 때 login.html로 이동 -->
+    <c:if test="${ empty sessionScope.userIdKey }">
+    	<script type="text/javascript">
+    		location.href = "login.html";
+    	</script>
+    </c:if>
     
     <!-- ### MainView ### -->
     <div id="home-mainView" class=" w-screen h-screen ">
