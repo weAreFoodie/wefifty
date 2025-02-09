@@ -15,7 +15,7 @@ public class PaymentAction implements Action {
 		
 		// 세션에 저장된 userId 가져오기
 		HttpSession session = request.getSession();
-		Integer userId = (Integer) session.getAttribute("userIdkey");
+		Integer userId = (Integer) session.getAttribute("userIdKey");
 		
 		// FIXME 세션 구현 전 임시 코드
 		userId = 1;
