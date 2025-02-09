@@ -8,7 +8,8 @@ import java.util.ArrayList;
 
 import model.dto.FriendDTO;
 import model.dto.FriendRequestDTO;
-import model.dto.UserDTO;
+import model.dto.ReceiveFriendDTO;
+import model.dto.SendFriendDTO;
 import util.DBUtil;
 
 public class FriendRequestDAO {
@@ -50,51 +51,82 @@ public class FriendRequestDAO {
 	// 친구 요청 정보 변경하기(수락, 거절)
 	public static boolean updateFriendRequest(int requestId, char status) throws SQLException {
 		Connection conn = null;
-		PreparedStatement pstmt = null;
+		PreparedStatement pstmt1 = null;
+		PreparedStatement pstmt2 = null;
+		PreparedStatement pstmt3 = null;
 		
 		try {
 			conn = DBUtil.getConnection();
 			
-			pstmt = conn.prepareStatement("update friend_request set status=? where id=?");
+			conn.setAutoCommit(false);  // 트랜잭션
 			
-			pstmt.setInt(1, status);
-			pstmt.setInt(2, requestId);
+			pstmt1 = conn.prepareStatement("update friend_request set status=? where id=?");
+			pstmt1.setString(1, String.valueOf(status));
+			pstmt1.setInt(2, requestId);
+			int rowsUpdate1 = pstmt1.executeUpdate();
 			
-			if (pstmt.executeUpdate() != 0) {
-				return true;
+			if (status == 'r') {  // 거절인 경우
+				// sender 찾기
+				int senderId = 0;
+				pstmt2 = conn.prepareStatement("select sender_id from friend_request where id=?");
+				pstmt2.setInt(1, requestId);
+				ResultSet rs = pstmt2.executeQuery();
+				
+				if (rs.next()) {
+					senderId = rs.getInt("sender_id");
+				}
+				
+				//포인트 +500
+				pstmt3 = conn.prepareStatement("UPDATE user SET point=(point+500) WHERE user_id=?");
+				pstmt3.setInt(1, senderId);
+				int rowsUpdate3 = pstmt3.executeUpdate();
+			
+				if (rowsUpdate1 != 0 && rowsUpdate3 != 0) {
+					conn.commit();
+					return true;
+				}
+			} else {
+				if (rowsUpdate1 != 0) {
+					conn.commit();
+					return true;
+				}
 			}
-
+		} catch(SQLException e) {	
+			conn.rollback();
+			throw e;
 		} finally {
-			DBUtil.close(conn, pstmt);
+			conn.setAutoCommit(true);
+			DBUtil.close(conn, new PreparedStatement[] {pstmt1, pstmt2});
 		}
 		
 		return false;
 	}
 	
 	// 해당 회원 친구 요청 목록 가져오기
-	public static ArrayList<FriendRequestDTO> findFriendRequestsBySenderId(int userId) throws SQLException {
+	public static ArrayList<SendFriendDTO> findFriendRequestsBySenderId(int userId) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		ArrayList<FriendRequestDTO> requestList = null;
+		ArrayList<SendFriendDTO> requestList = null;
 		
 		try {
 			conn = DBUtil.getConnection();
 			
-			pstmt = conn.prepareStatement("select * from friend_request where sender_id=?");
+			pstmt = conn.prepareStatement("select user_id, name, profile_picture, status\r\n"
+					+ "from (select receiver_id, status from friend_request where sender_id=?) as send join user\r\n"
+					+ "where receiver_id = user_id");
 			pstmt.setInt(1, userId);
 			
 			rs = pstmt.executeQuery();
 			
 			requestList = new ArrayList<>();
-			while(rs.next()) {
-				requestList.add( FriendRequestDTO.builder()
-									.id(rs.getInt("id"))
-									.senderId(rs.getInt("sender_id"))
-									.receiverId(rs.getInt("receiver_id"))
-									.status(rs.getString("status").charAt(0))
-									.build()
-						);
+			while (rs.next()) {
+				requestList.add(SendFriendDTO.builder()
+						.userId(rs.getInt("user_id"))
+						.name(rs.getString("name"))
+						.profilePicture(rs.getString("profile_picture"))
+						.status(rs.getString("status").charAt(0))
+						.build());
 			}
 			
 		} finally {
@@ -105,29 +137,31 @@ public class FriendRequestDAO {
 		return requestList;
 	}
 	
-	public static ArrayList<FriendRequestDTO> findFriendRequestsByReceiverId(int userId) throws SQLException {
+	// 요청 대기 중인 목록만 가져오도록
+	public static ArrayList<ReceiveFriendDTO> findFriendRequestsByReceiverId(int userId) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		ArrayList<FriendRequestDTO> requestList = null;
+		ArrayList<ReceiveFriendDTO> requestList = null;
 		
 		try {
 			conn = DBUtil.getConnection();
 			
-			pstmt = conn.prepareStatement("select * from friend_request where receiver_id=?");
+			pstmt = conn.prepareStatement("select user_id, id, name, profile_picture\r\n"
+					+ "from (select id, sender_id, status from friend_request where receiver_id=?) as receive join user\r\n"
+					+ "where sender_id = user_id and status = 'p'");
 			pstmt.setInt(1, userId);
 			
 			rs = pstmt.executeQuery();
 			
 			requestList = new ArrayList<>();
-			while(rs.next()) {
-				requestList.add( FriendRequestDTO.builder()
-						.id(rs.getInt("id"))
-						.senderId(rs.getInt("sender_id"))
-						.receiverId(rs.getInt("receiver_id"))
-						.status(rs.getString("status").charAt(0))
-						.build()
-						);
+			while (rs.next()) {
+				requestList.add(ReceiveFriendDTO.builder()
+						.userId(rs.getInt("user_id"))
+						.requestId(rs.getInt("id"))
+						.name(rs.getString("name"))
+						.profilePicture(rs.getString("profile_picture"))
+						.build());
 			}
 			
 		} finally {
