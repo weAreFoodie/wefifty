@@ -16,8 +16,8 @@ public class HomeController extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		
 		String command = request.getParameter("command");
-		if(command != null) {
-			
+		if(command == null) {
+		
 		}
 		
 		ActionFactory af = ActionFactory.getInstance();
