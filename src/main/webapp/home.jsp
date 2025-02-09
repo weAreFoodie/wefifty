@@ -41,6 +41,11 @@
             <span class="text-xs mt-1">친구 목록</span>
         </button>
         
+        <button onclick="loadView('friendRequestList', friendRequestListScript)" class="flex flex-col items-center text-white sidebar-btn">
+            <i class="fas fa-users fa-2x"></i>
+            <span class="text-xs mt-1">친구 요청</span>
+        </button>
+        
         
     </aside>
     
