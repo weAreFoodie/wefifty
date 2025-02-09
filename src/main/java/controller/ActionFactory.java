@@ -6,6 +6,11 @@ import controller.action.FriendRequestAction;
 import controller.action.GetFriendListAction;
 import controller.action.GetFriendRequestListAction;
 import controller.action.UpdateFriendRequestAction;
+import controller.action.LoginAction;
+import controller.action.PaymentAction;
+import controller.action.PointChargingAction;
+import controller.action.ViewPointChargingAction;
+
 
 public class ActionFactory {
 	private static ActionFactory instance = new ActionFactory();
@@ -27,7 +32,13 @@ public class ActionFactory {
 			action = new GetFriendRequestListAction();
 		} else if (command.equals("UpdateFriendRequest")) {
 			action = new UpdateFriendRequestAction();
-		}
+		} else if (command.equals("viewPointCharging")) {
+			action = new ViewPointChargingAction();
+		} else if (command.equals("payment")) {
+            action = new PaymentAction();
+        } else if (command.equals("pointCharging")) {
+            action = new PointChargingAction();
+        }
 
 		return action;
 	}
@@ -39,6 +50,17 @@ public class ActionFactory {
 			
 		}else if(command.equals("signup")) {
 			action = new ViewSignUpAction();
+		}
+		
+		return action;
+	}
+	
+	public Action getLoginAction(String command) {
+		Action action = null;
+		if(command.equals("login")) {
+			action = new LoginAction();
+		}else {
+			
 		}
 		
 		return action;

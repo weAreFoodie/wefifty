@@ -1,23 +1,21 @@
-async function ajaxRequest(method, query) {
-	/*
-	method : "GET" | "POST"
-	query : action 실행을 위한 쿼리
-	ex) ajaxRequest("POST", "home?command=FriendRequest&senderId=1&receiverId=10"
-	*/
-	
-	return new Promise((resolve, reject) => {
-       const xhttp = new XMLHttpRequest();
-       xhttp.onreadystatechange = function() {
-           if (this.readyState == 4 && this.status === 200) {
-               resolve(this.responseText);
-           } else if (this.readyState == 4 && this.status === 400) {
-				reject(new Error(this.responseText));
-		   }
-		   // TODO 400이 아닌 경우에도 에러 처리
-       };
-       xhttp.open(method, query);
-       xhttp.send();
-   });
+async function ajaxRequest(method, query, postData = null) {
+  return new Promise((resolve, reject) => {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState === 4) {
+        if (this.status >= 200 && this.status < 300) {
+          resolve(this.responseText);
+        } else {
+          reject(new Error(this.responseText));
+        }
+      }
+    };
+    xhttp.open(method, query);
+    if (method === "POST" && postData) {
+      xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    }
+    xhttp.send(postData);
+  });
 }
 
 function friendRequest(senderId, receiverId) {
@@ -181,4 +179,77 @@ function updateFriendRequest(decision, requestId) {
 		// 비정상 응답 시
 		Swal.fire("요청 실패", err.message, "error");
 	});
+}
+
+// 포인트 충전
+function pointChargingScript() {
+	console.log("pointChargingScript");
+	
+	const homeMainView = document.getElementById("home-mainView");
+	
+	// 서블릿 부르기
+	ajaxRequest("POST", "home?command=viewPointCharging")
+	.then((succ) => {
+		homeMainView.innerHTML = succ; // 성공일 시 페이지 교체
+	}).catch((err) => {
+		Swal.fire("요청 실패", err.message, "error");  // 실패일 시 팝업 띄우기
+	})
+}
+
+// 포인트 충전 시 결제 진행
+function submitPayment() {
+    const amount = document.getElementById("amount").value;
+    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+
+	if (amount <= 0 || isNaN(amount)) {
+		Swal.fire("오류", "충전 금액을 올바르게 입력하세요.", "error");
+	    return false;
+	}
+				
+    if (!paymentMethod) {
+        Swal.fire("오류", "결제 수단을 선택하세요.", "error");
+        return false;
+    }
+
+    const data = new URLSearchParams();
+    data.append("amount", amount);
+    data.append("paymentMethod", paymentMethod.value);
+
+	ajaxRequest("POST", "home?command=payment", data.toString())
+		.then((response) => {
+	    	const result = JSON.parse(response);
+
+	        if (result.success) {
+	            // 결제 성공 후, 포인트 충전 AJAX 요청 실행
+	            chargePoints(result.amount);
+	        } else {
+	        	Swal.fire("오류", result.message, "error");
+	        }
+	    })
+	    .catch((err) => {
+	    	Swal.fire("요청 실패", err.message, "error");
+	    });
+
+	    return false; // 기본 폼 제출 방지
+}
+
+// 결제후 포인트 충전 db 반영 요청
+function chargePoints(amount) {
+    const data = new URLSearchParams();
+    data.append("amount", amount);
+
+    ajaxRequest("POST", "home?command=pointCharging", data.toString())
+        .then((response) => {
+            const result = JSON.parse(response);
+			
+            if (result.success) {
+				// 포인트 충전 완료 화면을 로드
+				loadView("pointChargingResult", () => {}); // amount 값 전달
+            } else {
+                Swal.fire("오류", result.message, "error");
+            }
+        })
+        .catch((err) => {
+            Swal.fire("요청 실패", err.message, "error");
+        });
 }

@@ -46,9 +46,19 @@
             <span class="text-xs mt-1">친구 요청</span>
         </button>
         
+        <button onclick="loadView('pointCharging', pointChargingScript)" class="flex flex-col items-center text-white sidebar-btn">
+            <i class="fas fa-users fa-2x"></i>
+            <span class="text-xs mt-1">포인트 충전</span>
+        </button>
         
     </aside>
     
+    <!-- sessionScope.userIdKey 체크 후 null일 때 login.html로 이동 -->
+    <c:if test="${ empty sessionScope.userIdKey }">
+    	<script type="text/javascript">
+    		location.href = "login.html";
+    	</script>
+    </c:if>
     
     <!-- ### MainView ### -->
     <div id="home-mainView" class=" w-screen h-screen ">
