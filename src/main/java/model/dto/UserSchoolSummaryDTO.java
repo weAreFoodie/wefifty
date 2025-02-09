@@ -13,9 +13,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Builder
-public class FriendRequstDTO {
-	private int id;
-	private int senderId;
-	private int receiverId;
-	private char status;
+public class UserSchoolSummaryDTO {
+	private String schoolName;
+	private int gradYear;
 }
