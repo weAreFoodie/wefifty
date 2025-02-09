@@ -140,7 +140,40 @@ function friendListScript() {
 	})
 }
 
+function friendRequestListScript() {
+	console.log("friendRequestListScript");
+	
+	const homeMainView = document.getElementById("home-mainView");
+	
+	// 서블릿 부르기
+	ajaxRequest("POST", "home?command=GetFriendRequestList")
+	.then((succ) => {
+		homeMainView.innerHTML = succ; // 성공일 시 페이지 교체
+	}).catch((err) => {
+		Swal.fire("요청 실패", err.message, "error");  // 실패일 시 팝업 띄우기
+	})
+}
 
+// 친구 요청 수락 / 거절
+function updateFriendRequest(decision, requestId) {
+	// controller Action 호출
+	ajaxRequest(
+		"POST",
+		"home?command=UpdateFriendRequest&decision=" + decision + "&requestId=" + requestId
+	).then((succ) => {
+		// 정상 응답 시
+		if (decision == 'a') {
+			Swal.fire("완료!", "친구 요청이 성공적으로 수락되었습니다.", "success");
+		} else if (decision == 'r') {
+			Swal.fire("완료!", "친구 요청이 성공적으로 거절되었습니다.", "success");
+		}
+		
+		friendRequestListScript();  // 새로고침
+	}).catch((err) => {
+		// 비정상 응답 시
+		Swal.fire("요청 실패", err.message, "error");
+	});
+}
 
 // 포인트 충전
 function pointChargingScript() {
@@ -280,3 +313,5 @@ function filterFriends() {
 		}
 	});
 }
+
+
