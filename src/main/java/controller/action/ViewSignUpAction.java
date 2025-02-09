@@ -39,11 +39,16 @@ public class ViewSignUpAction implements Action{
 				.build();
 		
         // 🔥 이메일 중복 확인
-        if (UserDAO.isEmailExists(request.getParameter("email"))) {
-            request.setAttribute("errorMsg", "이미 가입된 이메일입니다.");
-            request.getRequestDispatcher(url).forward(request, response);
-            return;
-        }
+        try {
+			if (UserDAO.isEmailExists(request.getParameter("email"))) {
+			    request.setAttribute("errorMsg", "이미 가입된 이메일입니다.");
+			    request.getRequestDispatcher(url).forward(request, response);
+			    return;
+			}
+		} catch (SQLException | ServletException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         // 🔥 비밀번호 확인 로직 추가
         if (!request.getParameter("pwd").equals(request.getParameter("confirmPwd"))) {
