@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import model.dto.FriendInfoDTO;
 import model.dto.UserSchoolDTO;
 import model.dto.UserSchoolSummaryDTO;
@@ -146,7 +145,32 @@ public class UserSchoolDAO {
 		return result;	
 	}
 	
-	// (학교이름, 졸업년도), 범위값, 유저 아이디 로 해당 범위에 있는 회원의 특정 user 정보 받아오기
+	// 유저 학교 정보 집어넣기
+	public static boolean insertUserSchools(int userId, List<UserSchoolDTO> schoolList) {
+	    String sql = "INSERT INTO user_school (user_id, school_name, grad_year, school_type) VALUES (?, ?, ?, ?)";
+
+	    try (Connection conn = DBUtil.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+	    	// 학교들 저장
+	        for (UserSchoolDTO school : schoolList) {
+	            pstmt.setInt(1, userId);
+	            pstmt.setString(2, school.getSchoolName());
+	            pstmt.setInt(3, school.getGradYear());
+	            pstmt.setString(4, String.valueOf(school.getSchoolType())); // char → String 변환
+
+	            pstmt.addBatch();  // 배치 실행 추가
+	        }
+
+	        pstmt.executeBatch();  // 배치 실행
+	        return true;
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return false;
+	}
+
+  // (학교이름, 졸업년도), 범위값, 유저 아이디 로 해당 범위에 있는 회원의 특정 user 정보 받아오기
 	public static ArrayList<FriendInfoDTO> findFriendsBySchoolAndGradYear(ArrayList<UserSchoolSummaryDTO> schoolSummaryList, int gap, int userId) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
