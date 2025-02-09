@@ -4,6 +4,8 @@ import controller.action.Action;
 import controller.action.ViewSignUpAction;
 import controller.action.FriendRequestAction;
 import controller.action.GetFriendListAction;
+import controller.action.GetFriendRequestListAction;
+import controller.action.UpdateFriendRequestAction;
 
 public class ActionFactory {
 	private static ActionFactory instance = new ActionFactory();
@@ -21,6 +23,10 @@ public class ActionFactory {
 			action = new FriendRequestAction();
 		} else if (command.equals("GetFriendList")) {
 			action = new GetFriendListAction();
+		} else if (command.equals("GetFriendRequestList")) {
+			action = new GetFriendRequestListAction();
+		} else if (command.equals("UpdateFriendRequest")) {
+			action = new UpdateFriendRequestAction();
 		}
 
 		return action;
