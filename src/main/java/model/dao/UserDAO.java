@@ -11,6 +11,7 @@ import model.dto.UserDTO;
 import util.DBUtil;
 
 public class UserDAO {
+	
 	// 회원 정보 가져오기
 	public static UserDTO getUserByUserId(int userId) throws SQLException {
 		Connection conn = null;
@@ -131,6 +132,40 @@ public class UserDAO {
 		}
 		
 		return false;
+	}
+	
+	// 이메일로 회원 정보 가져오기
+	public static UserDTO getUserByEamil(String email) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try{
+			conn =DBUtil.getConnection();
+			pstmt = conn.prepareStatement("SELECT * FROM user WHERE email = ?");
+			pstmt.setString(1, email);
+			
+			// 가져온 유저 객체 생성
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            if (rs.next()) {
+	                return new UserDTO(
+	                    rs.getInt("user_id"),
+	                    rs.getString("email"),
+	                    rs.getString("pwd"),
+	                    rs.getString("nickname"),
+	                    rs.getString("bio"),
+	                    rs.getString("name"),
+	                    rs.getString("gender").charAt(0),  // CHAR(1) 타입 변환
+	                    rs.getString("phone"),
+	                    rs.getDate("birth").toLocalDate(), // java.sql.Date → LocalDate 변환
+	                    rs.getString("profile_picture"),
+	                    rs.getInt("point")
+	                );
+	            }
+	        }
+		} finally {
+			DBUtil.close(conn, pstmt);
+		}
+		return null;
 	}
 	
 	// 회원의 포인트 수정
