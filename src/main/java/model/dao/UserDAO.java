@@ -130,11 +130,31 @@ public class UserDAO {
 			DBUtil.close(conn, pstmt);
 		}
 		
-		
-		
 		return false;
 	}
 	
+	// 회원의 포인트 수정
+	public static boolean updatePoint(int userId, int amount) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        
+        try {
+            conn = DBUtil.getConnection();
+            pstmt = conn.prepareStatement("UPDATE user SET point = point + ? WHERE user_id = ?");
+            
+            pstmt.setInt(1, amount);
+            pstmt.setInt(2, userId);
+
+			if(pstmt.executeUpdate() != 0) {
+				return true;
+			}
+        } finally {
+            DBUtil.close(conn, pstmt);
+        }
+        
+        return false;
+    }
+
 	// 중복 체크
 	public static boolean isEmailExists(String email) throws SQLException {
 	    String sql = "SELECT COUNT(*) FROM user WHERE email = ?";
@@ -150,7 +170,4 @@ public class UserDAO {
 	    }
 	    return false; // 이메일이 존재하지 않음
 	}
-
-	
-
 }
