@@ -14,7 +14,20 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <link rel="stylesheet" href="wefifty.css">
+    <!-- 세션에 저장된 userId를 전역 변수 currentUserId에 할당 -->
+    <script>
+      const currentUserId = "${sessionScope.userIdKey}";
+      // FIXME 테스트용
+      //const currentUserId = 1;
+    </script>
     <script src="wefifty.js"></script>
+    <style>
+      /* 사이드바에 높은 z-index 부여 */
+      .sidebar {
+        position: relative;
+        z-index: 1000;
+      }
+    </style>
 </head>
 <body class="bg-gray-100 flex min-h-screen">
 
@@ -31,19 +44,34 @@
             <p class="text-sm text-white mt-1">김철수 님</p>
         </button>
         
-        <button onclick="loadView('recommend', recommendScript)" class="flex flex-col items-center text-white sidebar-btn">
-            <i class="fas fa-search fa-2x"></i>
-            <span class="text-xs mt-1">친구 찾기</span>
-        </button>
+        <button onclick="loadFriendRecommendation()" class="flex flex-col items-center text-white sidebar-btn">
+		    <i class="fas fa-search fa-2x"></i>
+		    <span class="text-xs mt-1">친구 찾기</span>
+		</button>
         
         <button onclick="loadView('friendList', friendListScript)" class="flex flex-col items-center text-white sidebar-btn">
             <i class="fas fa-users fa-2x"></i>
             <span class="text-xs mt-1">친구 목록</span>
         </button>
         
+        <button onclick="loadView('friendRequestList', friendRequestListScript)" class="flex flex-col items-center text-white sidebar-btn">
+            <i class="fas fa-users fa-2x"></i>
+            <span class="text-xs mt-1">친구 요청</span>
+        </button>
+        
+        <button onclick="loadView('pointCharging', pointChargingScript)" class="flex flex-col items-center text-white sidebar-btn">
+            <i class="fas fa-users fa-2x"></i>
+            <span class="text-xs mt-1">포인트 충전</span>
+        </button>
         
     </aside>
     
+    <!-- sessionScope.userIdKey 체크 후 null일 때 login.html로 이동 -->
+    <c:if test="${ empty sessionScope.userIdKey }">
+    	<script type="text/javascript">
+    		location.href = "login.html";
+    	</script>
+    </c:if>
     
     <!-- ### MainView ### -->
     <div id="home-mainView" class=" w-screen h-screen ">
