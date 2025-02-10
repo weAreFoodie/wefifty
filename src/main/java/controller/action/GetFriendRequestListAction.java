@@ -21,9 +21,7 @@ public class GetFriendRequestListAction implements Action {
 		// 세션에서 userId 가져오기
 		HttpSession session = request.getSession();
 
-		// FIXME 세션 구현 전 임시 코드
-		// int userId = (int)session.getAttribute("userId");
-		int userId = 3;
+		int userId = (int) session.getAttribute("userIdKey");
 
 		try {
 			// 유저아이디로 보낸 요청 찾기
