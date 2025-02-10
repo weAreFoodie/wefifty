@@ -226,6 +226,113 @@ git cherry-pick <commit-id>
 git push
 ```
 <br>
+
+**문제 4. 친구 추천 로직 sql문 문제** <br>
+#### 1. 초기 친구 추천 로직을 수행하는 sql문
+
+```sql
+// 학교이름, 졸업년도, 범위값으로 해당 범위에 있는 회원의 user_id 받아오기
+	ArrayList<Integer> findFriendsBySchoolAndGradYear(String schoolName, int gradYear, int gap) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		ArrayList<Integer> list = null;
+		
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement("SELECT user_id FROM user_school WHERE school_name = ? AND grad_year BETWEEN ? AND ?");
+			
+			pstmt.setString(1, schoolName);
+	        pstmt.setInt(2, gradYear - gap); // 졸업년도 - 범위
+	        pstmt.setInt(3, gradYear + gap); // 졸업년도 + 범위
+		
+	        rset = pstmt.executeQuery();
+	        
+	        list = new ArrayList<Integer>();
+	        
+	        while (rset.next()) {
+	            list.add(rset.getInt("user_id")); // user_id 추가
+	        }
+		} finally {
+			DBUtil.close(conn, pstmt, rset);
+		}
+		
+		return list;
+	}
+```
+1. 실제 친구 추천 로직에서 필요한 값은 (학교이름, 졸업년도, 범위값)으로 해당 범위에 있는 회원의 user_id들의 리스트 뿐만 아니라 그 user_id의 각 프로필 정보 역시 필요했습니다. 이때 user_school 테이블에서 검색해 user_id 값을 구하고 그 값으로 user 테이블에서 각 회원의 정보를 가져와야 했습니다.
+2. 메소드의 입력값인 ArrayList<UserSchoolSummaryDTO>의 크기가 동적으로 변하는 것을 고려해서 sql문을 만들어야 했습니다.
+3. 추천 기능을 활용하는 회원의 각 학교, 졸업년도와 해당 범위에 해당하는 친구들을 졸업년도의 차이가 작은 친구들부터 나오도록 정렬하는 것이 필요했습니다. 정렬과 union의 순서를 생각해야 했습니다.
+
+#### 2. 결과: 친구 추천 로직을 수행하는 sql문
+```sql
+// (학교이름, 졸업년도), 범위값, 유저 아이디 로 해당 범위에 있는 회원의 특정 user 정보 받아오기
+	public static ArrayList<FriendInfoDTO> findFriendsBySchoolAndGradYear(ArrayList<UserSchoolSummaryDTO> schoolSummaryList, int gap, int userId) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rset = null;
+        ArrayList<FriendInfoDTO> list = new ArrayList<>();
+        
+        try {
+            conn = DBUtil.getConnection();
+            
+            // SQL 쿼리 동적 생성하기
+            StringBuilder sql = new StringBuilder();
+            sql.append("SELECT u.user_id, u.nickname, u.bio, u.name, u.gender, u.birth, u.profile_picture, friend_data.year_diff, friend_data.school_name \n");
+            sql.append("FROM user u \n");
+            sql.append("JOIN (\n");
+
+            for (int i = 0; i < schoolSummaryList.size(); i++) {
+                if (i > 0) sql.append(" UNION \n"); // 여러 개의 (학교이름, 졸업년도) 조건을 UNION으로 합치기
+                
+                sql.append("SELECT us.user_id, ABS(CAST(us.grad_year AS SIGNED) - ?) AS year_diff, us.school_name \n");
+                sql.append("FROM user_school us \n");
+                sql.append("WHERE us.school_name = ? \n");
+                sql.append("AND us.grad_year BETWEEN ? AND ? \n");
+                sql.append("AND us.user_id != ? \n"); 
+            }
+
+            sql.append(") AS friend_data \n");
+            sql.append("ON u.user_id = friend_data.user_id \n");
+            sql.append("ORDER BY friend_data.year_diff ASC;"); 
+            
+            pstmt = conn.prepareStatement(sql.toString());
+
+            // 동적으로 바인딩할 파라미터 설정하기
+            int paramIndex = 1;
+            for (UserSchoolSummaryDTO school : schoolSummaryList) {
+                pstmt.setInt(paramIndex++, school.getGradYear()); // grad_year 비교용
+                pstmt.setString(paramIndex++, school.getSchoolName()); // school_name 조건
+                pstmt.setInt(paramIndex++, school.getGradYear() - gap); // grad_year 범위 시작
+                pstmt.setInt(paramIndex++, school.getGradYear() + gap); // grad_year 범위 끝
+                pstmt.setInt(paramIndex++, userId); // 자기 자신 제외
+            }
+
+            rset = pstmt.executeQuery();
+
+            // 결과 리스트에 추가하기
+            while (rset.next()) {
+                FriendInfoDTO friend = new FriendInfoDTO(
+                        rset.getInt("user_id"),
+                        rset.getString("nickname"),
+                        rset.getString("bio"),
+                        rset.getString("name"),
+                        rset.getString("gender").charAt(0),
+                        rset.getDate("birth").toLocalDate(),
+                        rset.getString("profile_picture"),
+                        rset.getString("school_name")
+                );
+                list.add(friend);
+            }
+        } finally {
+            DBUtil.close(conn, pstmt, rset);
+        }
+
+        return list;
+    }
+```
+
+
 <br>
 
 ---
