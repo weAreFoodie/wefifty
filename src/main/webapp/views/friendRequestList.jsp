@@ -7,7 +7,6 @@
 .fixed-header thead {
 	position: sticky;
 	top: 0;
-	background-color: #f8f8f8; /* 제목 배경색 */
 	z-index: 10; /* 다른 요소 위에 오도록 설정 */
 }
 
@@ -41,7 +40,9 @@
 	<!-- 왼쪽 테이블 -->
 	<div class="w-1/2">
 		<h2 class="text-lg font-semibold mb-3">내가 보낸 요청</h2>
-		<div class="bg-white shadow-md rounded-lg overflow-hidden overflow-y-auto custom-scrollbar" style="max-height: calc(100vh - 200px);">
+		<div
+			class="bg-white shadow-md rounded-lg overflow-hidden overflow-y-auto custom-scrollbar"
+			style="max-height: calc(100vh - 200px);">
 			<table class="w-full text-left border-collapse fixed-header">
 				<thead class="bg-gray-200">
 					<tr>
@@ -50,23 +51,33 @@
 						<th class="p-3">상태</th>
 					</tr>
 				</thead>
-				
+
 				<tbody class="">
 					<c:forEach items="${requestScope.sendFriendList}" var="send">
-						<tr class="border-t hover:bg-gray-100">
+						<tr class="border-t hover:bg-gray-100"
+							onclick="getFriendCard('friendRequestList', ${send.userId})">
 							<td class="p-3 flex items-center space-x-3"><img
 								src="https://placehold.co/40" class="w-10 h-10 rounded-full"
 								alt="Profile"></td>
 							<td class="p-3">${send.name}</td>
-							<c:if test="${send.status.toString() == 'p'}">
-								<td class="p-3">대기중</td>
-							</c:if>
-							<c:if test="${send.status.toString() == 'r'}">
-								<td class="p-3">거절</td>
-							</c:if>
-							<c:if test="${send.status.toString() == 'a'}">
-								<td class="p-3">수락</td>
-							</c:if>
+							<td class="p-3"><c:choose>
+									<c:when test="${send.status.toString() == 'p'}">
+										<span
+											class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-semibold">
+											⏳ 대기중 </span>
+									</c:when>
+									<c:when test="${send.status.toString() == 'r'}">
+										<span
+											class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-semibold">
+											❌ 거절됨 </span>
+									</c:when>
+									<c:when test="${send.status.toString() == 'a'}">
+										<span
+											class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
+											✅ 수락됨 </span>
+									</c:when>
+								</c:choose></td>
+
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -77,7 +88,9 @@
 	<!-- 오른쪽 테이블 -->
 	<div class="w-1/2">
 		<h2 class="text-lg font-semibold mb-3">내가 받은 요청</h2>
-		<div class="bg-white shadow-md rounded-lg overflow-hidden overflow-y-auto custom-scrollbar" style="max-height: calc(100vh - 200px);">
+		<div
+			class="bg-white shadow-md rounded-lg overflow-hidden overflow-y-auto custom-scrollbar"
+			style="max-height: calc(100vh - 200px);">
 			<table class="w-full text-left border-collapse fixed-header">
 				<thead class="bg-gray-200">
 					<tr>
@@ -88,16 +101,19 @@
 				</thead>
 				<tbody>
 					<c:forEach items="${requestScope.receiveFriendList}" var="receive">
-						<tr class="border-t hover:bg-gray-100">
+						<tr class="border-t hover:bg-gray-100"
+							onclick="getFriendCard('friendRequestList', ${receive.userId})">
 							<td class="p-3 flex items-center space-x-3"><img
 								src="https://placehold.co/40" class="w-10 h-10 rounded-full"
 								alt="Profile"></td>
 							<td class="p-3">${receive.name}</td>
 							<td class="p-3">
 								<div class="flex justify-end items-center space-x-2">
-									<button onclick="updateFriendRequest('a', ${receive.requestId})"
+									<button
+										onclick="updateFriendRequest('a', ${receive.requestId})"
 										class="bg-green-500 text-white px-4 py-2 rounded-md">수락</button>
-									<button onclick="updateFriendRequest('r', ${receive.requestId})"
+									<button
+										onclick="updateFriendRequest('r', ${receive.requestId})"
 										class="bg-red-500 text-white px-4 py-2 rounded-md">거절</button>
 								</div>
 							</td>
