@@ -38,7 +38,9 @@
         <a href="#">
             <h1 class="font-bold text-lg" style="color:white;">WEFIFTY</h1>
         </a>
+
         <button id="nav-profile-view" onclick="loadView('profile', profileScript)" class="flex flex-col items-center">
+
         </button>
         
         <button onclick="loadFriendRecommendation()" class="flex flex-col items-center text-white sidebar-btn">
