@@ -6,6 +6,7 @@ import controller.action.ViewSignUpAction;
 import controller.action.FriendRequestAction;
 import controller.action.GetFriendListAction;
 import controller.action.GetFriendRequestListAction;
+import controller.action.GetNavProfileAction;
 import controller.action.UpdateFriendRequestAction;
 import controller.action.LoginAction;
 import controller.action.PaymentAction;
@@ -37,14 +38,16 @@ public class ActionFactory {
 		} else if (command.equals("viewPointCharging")) {
 			action = new ViewPointChargingAction();
 		} else if (command.equals("payment")) {
-            action = new PaymentAction();
-    } else if (command.equals("pointCharging")) {
-        action = new PointChargingAction();
-    } else if (command.equals("updateProfile")) {
-      action = new UpdateProfileAction();
-    } else if (command.equals("friendRecommendation")) {
-      action = new FriendRecommendationAction();
-    }
+			action = new PaymentAction();
+		} else if (command.equals("pointCharging")) {
+			action = new PointChargingAction();
+		} else if (command.equals("updateProfile")) {
+			action = new UpdateProfileAction();
+		} else if (command.equals("friendRecommendation")) {
+			action = new FriendRecommendationAction();
+		} else if (command.equals("GetNavProfileAction")) {
+			action = new GetNavProfileAction();
+		}
 
 		return action;
 	}
