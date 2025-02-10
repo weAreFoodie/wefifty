@@ -166,69 +166,12 @@
 ### 포인트 충전
 ![Image](https://github.com/user-attachments/assets/95308da6-146f-4ee2-bb00-d8d7345053c5)
 
-## 💣**6. Troubleshooting**
-**문제 1 브렌치를 merge하지 않고 삭제 하는 문제 발생** <br>
-> feature/login 브렌치에서 로그인 기능을 추가 하고 dev 브렌치에 merge가 성공적으로 된 줄 알고 로컬, 원격 브렌치를 모두 삭제하는 문제가 발생했다.
-
-**문제 1 브렌치 복구 하기**<br>
-1. 최근 작업 내용 확인
-> 	`git reflog` : 최근 작업 내용을 확인하는 명령어
-> 	![Image](https://github.com/user-attachments/assets/d3f2233e-91d3-4b0a-a2ed-eedde62543e1)
-2. 해당 커밋을 기준으로 브렌치 복구
->	`git checkout -b feature/login d652904` : git checkout -b <branch 이름> <해당 커밋 해시>
-
 <br>
 
-**문제2. AJAX로 로드된 JSP의 Swiper 및 버튼 이벤트 미작동 문제** <br>
-> AJAX를 사용하여 친구 추천 화면을 불러온 후, Swiper 네비게이션 버튼(이전/다음)이 보이지 않거나 작동하지 않고, "친구야 혹시 너니?" 버튼 클릭 이벤트도 동작하지 않는 현상이 있었습니다. <br><br>
-> **오류 설명**
-> -  AJAX로 JSP를 동적으로 불러왔을 때 JSP 내부에 포함된 스크립트들이 실행되지 않거나, 실행 타이밍이 맞지 않아 필요한 초기화가 이루어지지 않아 오류가 발생했습니다. <br>
->
-> **원인**
-> - JSP(친구 추천 화면) 내에 Swiper 초기화 및 버튼 이벤트 등록 스크립트가 포함되어 있었지만, AJAX로 innerHTML을 변경하면 브라우저는 새롭게 추가된 script 태그를 실행하지 않습니다.
-> - DOMContentLoaded 이벤트는 페이지 최초 로딩 시에만 발생하므로, AJAX로 동적으로 삽입된 요소에서는 실행되지 않습니다.
-> - DOMContentLoaded 이벤트 안에서 Swiper 초기화와 버튼 이벤트 등록이 실행되었기 때문에, AJAX로 불러온 후에는 DOMContentLoaded 이벤트가 다시 발생하지 않아 초기화가 되지 않습니다.
-> - AJAX로 새로운 HTML을 삽입한 후 Swiper 초기화를 수행하지 않으면, 네비게이션 버튼(.swiper-button-next, .swiper-button-prev)이 정상적으로 표시되지 않습니다.
-> - AJAX 요청으로 HTML을 교체하면 기존에 등록된 이벤트 리스너가 제거되므로, 새로운 요소에 대해 다시 이벤트 리스너를 등록해야 합니다. <br>
-
-**문제 2 해결 방안** <br>
-> **1.** Swiper 및 버튼 이벤트 등록을 별도 함수로 분리
-> - AJAX 로드 성공 후 별도의 초기화 함수를 호출하여 Swiper와 버튼 이벤트를 재등록합니다.
-> - Swiper 초기화 및 버튼 이벤트 등록을 별도의 함수(initRecommendationView())로 만들어 AJAX 요청 성공 후 직접 호출하도록 변경합니다.
-> 
-> **2.** AJAX 요청 성공 후 Swiper 및 버튼 이벤트 초기화 함수 호출
-> - AJAX로 HTML을 불러온 후, initRecommendationView()를 호출하여 Swiper와 버튼 이벤트를 다시 등록하도록 변경합니다.
-> **3.** 네비게이션 바의 친구 추천 버튼에서 AJAX 요청 시 loadFriendRecommendation() 함수를 호출하도록 통일합니다.
-
-<br>
-
-**문제 3. dev 브랜치에서 작업하여 push가 거부되는 문제** <br>
-> 브랜치 전략 상 dev 브랜치는 타 브랜치에서 PR을 작성하여 merge 시키도록 설정해놓아서 dev 브랜치에서 작업한 내용을 push할 수 없는 문제가 발생했다.
-
-**문제 3 해결 방안. commit한 내용을 타 브랜치로 옮기기.** <br>
-#### 1. 타 브랜치로 가져갈 commit의 id를 복사
-```bash
-git logs
-```
-
-#### 2. 다른 브랜치로 이동
-```bash
-git checkout -b  <branch name>
-```
-#### 3. cherry-pick 실행
-cherry-pick이란 현재 브랜치에서 특정 commit의 해당 변동사항을 적용할 수 있는 명령어이다.
-```bash
-git cherry-pick <commit-id>
-```
-
-#### 4. 변경사항 푸쉬
-```bash
-git push
-```
-<br>
-
-**문제 4. 친구 추천 로직 sql문 문제** <br>
-#### 1. 초기 친구 추천 로직을 수행하는 sql문
+### 친구 추천 로직 SQL문 고려사항
+#### 1. 초기: 친구 추천 로직을 수행하는 SQL문
+<details>
+<summary>코드 보기</summary>
 
 ```sql
 // 학교이름, 졸업년도, 범위값으로 해당 범위에 있는 회원의 user_id 받아오기
@@ -260,11 +203,24 @@ git push
 		return list;
 	}
 ```
-1. 실제 친구 추천 로직에서 필요한 값은 (학교이름, 졸업년도, 범위값)으로 해당 범위에 있는 회원의 user_id들의 리스트 뿐만 아니라 그 user_id의 각 프로필 정보 역시 필요했습니다. 이때 user_school 테이블에서 검색해 user_id 값을 구하고 그 값으로 user 테이블에서 각 회원의 정보를 가져와야 했습니다.
-2. 메소드의 입력값인 ArrayList<UserSchoolSummaryDTO>의 크기가 동적으로 변하는 것을 고려해서 sql문을 만들어야 했습니다.
-3. 추천 기능을 활용하는 회원의 각 학교, 졸업년도와 해당 범위에 해당하는 친구들을 졸업년도의 차이가 작은 친구들부터 나오도록 정렬하는 것이 필요했습니다. 정렬과 union의 순서를 생각해야 했습니다.
+</details> <br>
 
-#### 2. 결과: 친구 추천 로직을 수행하는 sql문
+> **고려사항**
+> 1. 추가적인 프로필 정보 필요
+>  - 친구 추천을 위해 필요한 데이터는 단순히 `user_id` 리스트뿐만 아니라, 해당 `user_id`에 해당하는 유저의 프로필 정보도 필요하다.
+>  - 따라서 `user_school` 테이블에서 `user_id`를 조회한 후, 이를 기반으로 `user` 테이블에서 추가 정보를 가져와야 한다.
+>
+> 2. 동적으로 변하는 입력 리스트 처리
+>  - 메소드의 입력값인 `ArrayList<UserSchoolSummaryDTO>`는 크기가 동적으로 변할 수 있으므로, SQL문을 유연하게 작성해야 한다.
+>
+> 3. 졸업 연도 차이가 작은 순서로 정렬
+>  - 추천 친구 목록을 졸업 연도 차이가 작은 순서로 정렬해야 한다.
+>  - 이를 위해 `UNION`을 사용해 여러 조건을 합친 후, `ORDER BY`를 활용해 정렬을 적용해야 한다.
+
+#### 2. 최종: 친구 추천 로직을 수행하는 SQL문
+<details>
+<summary>코드 보기</summary>
+
 ```sql
 // (학교이름, 졸업년도), 범위값, 유저 아이디 로 해당 범위에 있는 회원의 특정 user 정보 받아오기
 	public static ArrayList<FriendInfoDTO> findFriendsBySchoolAndGradYear(ArrayList<UserSchoolSummaryDTO> schoolSummaryList, int gap, int userId) throws SQLException {
@@ -331,7 +287,86 @@ git push
         return list;
     }
 ```
+</details> <br>
 
+> **최종 SQL문 개선 포인트**
+> 1. 유저 프로필 정보까지 조회
+> - 기존 SQL문에서는 user_id만 조회했지만, 최종 SQL문에서는 nickname, bio, name, gender, birth, profile_picture 등의 프로필 정보를 함께 조회하도록 개선했다.
+>
+> 2. 여러 학교 및 졸업 연도 검색 지원
+>  - ArrayList<UserSchoolSummaryDTO>를 활용하여 사용자가 여러 학교를 다녔거나 다양한 졸업 연도를 입력했을 때도 추천이 가능하도록 UNION을 활용했다.
+>
+> 3. 연도 차이를 계산하여 정렬 적용
+>  - ABS(CAST(us.grad_year AS SIGNED) - ?)를 이용하여 각 추천 친구의 졸업 연도 차이를 계산하고, ORDER BY year_diff ASC를 적용해 졸업 연도가 가까운 친구부터 추천되도록 정렬했다.
+>
+> 4. 자기 자신 제외
+>  - AND us.user_id != ? 조건을 추가하여 자기 자신이 추천 목록에 포함되지 않도록 했다.
+
+> **결론**
+> 최종 SQL문은 여러 학교 및 졸업 연도를 지원하면서도, 졸업 연도 차이가 작은 순서로 추천 친구를 정렬하여 더욱 정교한 친구 추천 기능을 제공한다.
+> 이로 인해 사용자에게 보다 연관성 높은 친구 추천을 할 수 있도록 개선되었다.
+
+<br>
+
+## 💣**6. Troubleshooting**
+**문제 1 브렌치를 merge하지 않고 삭제 하는 문제 발생** <br>
+> feature/login 브렌치에서 로그인 기능을 추가 하고 dev 브렌치에 merge가 성공적으로 된 줄 알고 로컬, 원격 브렌치를 모두 삭제하는 문제가 발생했다.
+
+**문제 1 브렌치 복구 하기**<br>
+1. 최근 작업 내용 확인
+> 	`git reflog` : 최근 작업 내용을 확인하는 명령어
+> 	![Image](https://github.com/user-attachments/assets/d3f2233e-91d3-4b0a-a2ed-eedde62543e1)
+2. 해당 커밋을 기준으로 브렌치 복구
+>	`git checkout -b feature/login d652904` : git checkout -b <branch 이름> <해당 커밋 해시>
+
+<br>
+
+**문제2. AJAX로 로드된 JSP의 Swiper 및 버튼 이벤트 미작동 문제** <br>
+> AJAX를 사용하여 친구 추천 화면을 불러온 후, Swiper 네비게이션 버튼(이전/다음)이 보이지 않거나 작동하지 않고, "친구야 혹시 너니?" 버튼 클릭 이벤트도 동작하지 않는 현상이 있었다. <br><br>
+> **오류 설명**
+> -  AJAX로 JSP를 동적으로 불러왔을 때 JSP 내부에 포함된 스크립트들이 실행되지 않거나, 실행 타이밍이 맞지 않아 필요한 초기화가 이루어지지 않는 오류가 발생했다. <br>
+>
+> **원인**
+> - JSP(친구 추천 화면) 내에 Swiper 초기화 및 버튼 이벤트 등록 스크립트가 포함되어 있었지만, AJAX로 innerHTML을 변경하면 브라우저는 새롭게 추가된 script 태그를 실행하지 않는다.
+> - DOMContentLoaded 이벤트는 페이지 최초 로딩 시에만 발생하므로, AJAX로 동적으로 삽입된 요소에서는 실행되지 않는다.
+> - DOMContentLoaded 이벤트 안에서 Swiper 초기화와 버튼 이벤트 등록이 실행되었기 때문에, AJAX로 불러온 후에는 DOMContentLoaded 이벤트가 다시 발생하지 않아 초기화가 되지 않는다.
+> - AJAX로 새로운 HTML을 삽입한 후 Swiper 초기화를 수행하지 않으면, 네비게이션 버튼(.swiper-button-next, .swiper-button-prev)이 정상적으로 표시되지 않는다.
+> - AJAX 요청으로 HTML을 교체하면 기존에 등록된 이벤트 리스너가 제거되므로, 새로운 요소에 대해 다시 이벤트 리스너를 등록해야 한다. <br>
+
+**문제 2 해결 방안** <br>
+> **1.** Swiper 및 버튼 이벤트 등록을 별도 함수로 분리
+> - AJAX 로드 성공 후 별도의 초기화 함수를 호출하여 Swiper와 버튼 이벤트를 재등록한다.
+> - Swiper 초기화 및 버튼 이벤트 등록을 별도의 함수(initRecommendationView())로 만들어 AJAX 요청 성공 후 직접 호출하도록 변경한다.
+> 
+> **2.** AJAX 요청 성공 후 Swiper 및 버튼 이벤트 초기화 함수 호출
+> - AJAX로 HTML을 불러온 후, initRecommendationView()를 호출하여 Swiper와 버튼 이벤트를 다시 등록하도록 변경한다.
+> **3.** 네비게이션 바의 친구 추천 버튼에서 AJAX 요청 시 loadFriendRecommendation() 함수를 호출하도록 통일한다.
+
+<br>
+
+**문제 3. dev 브랜치에서 작업하여 push가 거부되는 문제** <br>
+> 브랜치 전략 상 dev 브랜치는 타 브랜치에서 PR을 작성하여 merge 시키도록 설정해놓아서 dev 브랜치에서 작업한 내용을 push할 수 없는 문제가 발생했다.
+
+**문제 3 해결 방안. commit한 내용을 타 브랜치로 옮기기.** <br>
+#### 1. 타 브랜치로 가져갈 commit의 id를 복사
+```bash
+git logs
+```
+
+#### 2. 다른 브랜치로 이동
+```bash
+git checkout -b  <branch name>
+```
+#### 3. cherry-pick 실행
+cherry-pick이란 현재 브랜치에서 특정 commit의 해당 변동사항을 적용할 수 있는 명령어이다.
+```bash
+git cherry-pick <commit-id>
+```
+
+#### 4. 변경사항 푸쉬
+```bash
+git push
+```
 
 <br>
 
