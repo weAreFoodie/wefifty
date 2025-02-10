@@ -190,6 +190,7 @@ function updateFriendRequest(decision, requestId) {
 		}
 		
 		friendRequestListScript();  // 새로고침
+		getNavProfileAction();
 	}).catch((err) => {
 		// 비정상 응답 시
 		Swal.fire("요청 실패", err.message, "error");
