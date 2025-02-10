@@ -252,6 +252,7 @@ function chargePoints(amount) {
             if (result.success) {
 				// 포인트 충전 완료 화면을 로드
 				loadView("pointChargingResult", () => {}); // amount 값 전달
+				getNavProfileAction();
             } else {
                 Swal.fire("오류", result.message, "error");
             }
