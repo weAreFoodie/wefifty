@@ -99,11 +99,11 @@
 --- 
 
 ## 🗺️**4. Architecture**
-![architecture](/img/architecture.png)
+![architecture](/img/architecture01.png)
 
 | name | JDK | Tomcat | Mysql | Ubuntu |
 |:--:|:--:|:--:|:--:|:--:|
-| version | 17 | 10.1 | 8 | 24.01 |
+| version | 17 | 10.1 | 8.0.41 | 24.01 |
 
 ---
 
