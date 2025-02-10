@@ -19,7 +19,6 @@ public class PointChargingAction implements Action {
         Integer userId = (Integer) session.getAttribute("userIdKey");
         
         // FIXME: 세션 구현 전 임시 코드
-        userId = 1;
         
         int amount = Integer.parseInt(request.getParameter("amount"));
         

@@ -146,13 +146,32 @@
 
 
 ---
+## 📒**5. Pages and Features** 
+
+### 1. 로그인
+![[login.png]]
+
+### 회원 가입![[signup.png]]
+
+### 친구 찾기![[requestFrined.png]]
+### 친구 목록
+
+### 친구 요청
+
+### 포인트 충전
+![[chargePoint.png]]
 
 ## 💣**6. Troubleshooting**
-> **문제1. 문제 1 한줄 설명** <br>
-> 문제 내용 요약 및 오류 설명
+> **문제1. 브렌치를 merge하지 않고 삭제 하는 문제 발생** <br>
+> feature/login 브렌치에서 로그인 기능을 추가 하고 dev 브렌치에 merge가 성공적으로 된 줄 알고 로컬, 원격 브렌치를 모두 삭제하는 문제가 발생했다.
 >
-> **문제 1 해결 방안** <br>
-> 문제 해결 방법
+> **문제 1 브렌치 복구 하기**<br>
+> 1. 최근 작업 내용 확인
+> 	`git reflog` : 최근 작업 내용을 확인하는 명령어
+> 	![[trouble1.1.png]]
+> 2. 해당 커밋을 기준으로 브렌치 복구
+>	`git checkout -b feature/login d652904` : git checkout -b <branch 이름> <해당 커밋 해시>
+
 
 > **문제2. 문제 2 한줄 설명** <br>
 > 문제 내용 요약 및 오류 설명
