@@ -10,23 +10,24 @@ import java.io.IOException;
 import controller.action.Action;
 import controller.action.UpdateProfileAction;
 
-@WebServlet("/login")
-public class LoginController extends HttpServlet {
+/**
+ * Servlet implementation class updateProfileController
+ */
+@WebServlet("/updateProfile")
+public class updateProfileController extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-		
 		String command = request.getParameter("command");
-		System.out.println("loginController" + command);
 		
-		
-		if (command == null) {
-		    command = "login";
-		}
-		
-		ActionFactory af = ActionFactory.getInstance();
-		
-		Action action = af.getLoginAction(command);
-		action.execute(request, response);
+        Action action = null;
+        
+        if ("updateProfile".equals(command)) {
+            action = new UpdateProfileAction();
+        } else {
+            System.out.println("null"); // 기본 홈 화면 액션
+        }
+
+        action.execute(request, response);
 	}
 
 }

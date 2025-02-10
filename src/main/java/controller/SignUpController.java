@@ -18,8 +18,9 @@ public class SignUpController extends HttpServlet {
 		System.out.println("signUpController" + command);
 
 		
-		if (command == null || !command.equals("signup")) {
-		    response.sendRedirect("error.jsp"); // 또는 적절한 에러 페이지로 이동
+		if (command == null) {
+			response.setStatus(400);
+		    request.setAttribute("errorMsg", "회원가입을 다시 시도해주세요.");
 		    return;
 		}
 		

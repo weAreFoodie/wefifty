@@ -7,6 +7,7 @@ import controller.action.GetFriendListAction;
 import controller.action.LoginAction;
 import controller.action.PaymentAction;
 import controller.action.PointChargingAction;
+import controller.action.UpdateProfileAction;
 import controller.action.ViewPointChargingAction;
 
 public class ActionFactory {
@@ -31,6 +32,8 @@ public class ActionFactory {
             action = new PaymentAction();
         } else if (command.equals("pointCharging")) {
             action = new PointChargingAction();
+        } else if (command.equals("updateProfile")) {
+        	action = new UpdateProfileAction();
         }
 
 		return action;
