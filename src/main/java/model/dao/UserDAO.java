@@ -135,7 +135,7 @@ public class UserDAO {
 	}
 	
 	// 이메일로 회원 정보 가져오기
-	public static UserDTO getUserByEamil(String email) throws SQLException {
+	public static UserDTO getUserByEmail(String email) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		

@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.sql.*, jakarta.servlet.http.*, model.dao.UserDAO, model.dto.UserDTO" %>
+<%@ page import="java.sql.*, jakarta.servlet.http.*, model.dao.UserDAO, model.dto.UserDTO, model.dto.UserSchoolDTO, java.util.ArrayList, model.dao.UserSchoolDAO"%>
 
 <%
     HttpSession sessionObj = request.getSession(false);
-    Integer userId = (sessionObj != null) ? (Integer) sessionObj.getAttribute("userId") : null;
+    Integer userId = (sessionObj != null) ? (Integer) sessionObj.getAttribute("userIdKey") : null;
 
     if (userId == null) {
         response.sendRedirect("login.html"); // 로그인하지 않은 경우 로그인 페이지로 이동
@@ -11,6 +11,19 @@
     }
 
     UserDTO user = UserDAO.getUserByUserId(userId); // DB에서 유저 정보 조회
+    ArrayList<UserSchoolDTO> userSchools = UserSchoolDAO.findUserSchoolByUserId(userId); // 학교 정보 조회
+    
+    String elemSchool = "", middleSchool = "", highSchool = "", university = "";
+    int elemGradYear = 0, middleGradYear = 0, highGradYear = 0, uniGradYear = 0;
+
+    for (UserSchoolDTO school : userSchools) {
+        switch (school.getSchoolType()) {
+            case 'e': elemSchool = school.getSchoolName(); elemGradYear = school.getGradYear(); break;
+            case 'm': middleSchool = school.getSchoolName(); middleGradYear = school.getGradYear(); break;
+            case 'h': highSchool = school.getSchoolName(); highGradYear = school.getGradYear(); break;
+            case 'u': university = school.getSchoolName(); uniGradYear = school.getGradYear(); break;
+        }
+    }
 %>
 
 <!DOCTYPE html>
@@ -31,6 +44,7 @@
 
     <!-- Update Form -->
     <form name="updateForm" method="post" action="updateProfile">
+    	<input type="hidden" name="command" value="updateProfile">
         <div class="flex justify-center items-center min-h-screen mt-24">
             <div class="w-full max-w-2xl bg-white p-10 shadow-lg">
                 <h2 class="text-3xl font-semibold mb-4">회원 정보 수정</h2>
@@ -95,7 +109,40 @@
                     <label class="block font-semibold">프로필 사진 URL</label>
                     <input type="text" name="profilePicture" value="<%= user.getProfilePicture() %>" class="w-full border p-2 rounded-md">
                 </div><br>
+                
+                <!-- 학력 수정 가능 -->
+                <div>
+                    <label class="block font-semibold">초등학교</label>
+                    <div class="flex space-x-2">
+                        <input type="text" name="elemSchool" value="<%= elemSchool %>" class="w-2/3 border p-2 rounded-md">
+                        <input type="number" name="elemGradYear" value="<%= elemGradYear %>" class="w-1/3 border p-2 rounded-md">
+                    </div>
+                </div><br>
 
+                <div>
+                    <label class="block font-semibold">중학교</label>
+                    <div class="flex space-x-2">
+                        <input type="text" name="middleSchool" value="<%= middleSchool %>" class="w-2/3 border p-2 rounded-md">
+                        <input type="number" name="middleGradYear" value="<%= middleGradYear %>" class="w-1/3 border p-2 rounded-md">
+                    </div>
+                </div><br>
+
+                <div>
+                    <label class="block font-semibold">고등학교</label>
+                    <div class="flex space-x-2">
+                        <input type="text" name="highSchool" value="<%= highSchool %>" class="w-2/3 border p-2 rounded-md">
+                        <input type="number" name="highGradYear" value="<%= highGradYear %>" class="w-1/3 border p-2 rounded-md">
+                    </div>
+                </div><br>
+
+                <div>
+                    <label class="block font-semibold">대학교</label>
+                    <div class="flex space-x-2">
+                        <input type="text" name="university" value="<%= university %>" class="w-2/3 border p-2 rounded-md">
+                        <input type="number" name="uniGradYear" value="<%= uniGradYear %>" class="w-1/3 border p-2 rounded-md">
+                    </div>
+                </div><br>
+                
                 <!-- 수정하기 버튼 -->
                 <div class="flex space-x-4 mt-6">
                     <button type="reset" class="w-1/2 border border-gray-400 py-2 rounded-md">취소</button>
