@@ -30,7 +30,7 @@ public class LoginAction implements Action{
 				HttpSession session = request.getSession();
 				session.setAttribute("userIdKey", user.getUserId()); // 세션에 userId저장
 				
-				response.sendRedirect("updateProfile.jsp"); // 홈 페이지로 이동
+				response.sendRedirect("home.jsp"); // 홈 페이지로 이동
 			} else {
 				request.setAttribute("errorMsg", "아이디 또는 비밀번호가 올바르지 않습니다.");
 				request.getRequestDispatcher("login.html").forward(request, response);
