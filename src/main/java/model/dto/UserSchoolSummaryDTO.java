@@ -13,10 +13,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Builder
-public class UserSchoolDTO {
-	private int userSchoolId;
-	private int userId;
+public class UserSchoolSummaryDTO {
 	private String schoolName;
 	private int gradYear;
-	private char schoolType;
 }
