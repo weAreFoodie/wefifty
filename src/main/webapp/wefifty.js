@@ -4,6 +4,7 @@
   style.textContent = `
   		.swiper-button-next, .swiper-button-prev {
 			position: absolute;
+			opacity: 100;
   	        font-size: 50px !important; 
   	        width: 80px !important;     
   	        height: 160px !important;    
@@ -52,6 +53,18 @@ async function ajaxRequest(method, query, postData = null) {
     }
     xhttp.send(postData);
   });
+}
+
+function getNavProfileAction() {
+	const navProfile = document.getElementById("nav-profile-view");
+	ajaxRequest(
+		"POST",
+		"home?command=GetNavProfileAction"
+	).then ((succ) => {
+		navProfile.innerHTML = succ;
+	}).catch((err) => {		
+		Swal.fire("요청 실패", err.message, "error"); 
+	});
 }
 
 function friendRequest(senderId, receiverId) {

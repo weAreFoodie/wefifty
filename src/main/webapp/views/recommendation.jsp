@@ -2,6 +2,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <div class="w-[90%] max-w-[1200px] mx-auto my-6" style="position: relative;">
     <div class="swiper-container">
+	<div class="w-[100%]">
+		<div class="swiper-button-next"></div>
+		<div class="swiper-button-prev"></div>
+		<div class="swiper-pagination"></div>
+	</div>
         <div class="swiper-wrapper">
             <c:choose>
                 <c:when test="${not empty requestScope.resultFriendRecommendation}">
@@ -72,7 +77,5 @@
             </c:choose>
         </div>
     </div>
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
-    <div class="swiper-pagination"></div>  
+
 </div>
