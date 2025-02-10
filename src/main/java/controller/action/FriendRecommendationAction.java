@@ -19,7 +19,7 @@ public class FriendRecommendationAction implements Action {
 		
 		// 세션에 저장된 userId 가져오기
 		HttpSession session = request.getSession();
-		int userId = (Integer) session.getAttribute("userIdkey");
+		int userId = (Integer) session.getAttribute("userIdKey");
 		
 		// FIXME 테스트용
 //		int userId = 1;
