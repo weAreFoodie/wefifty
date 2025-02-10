@@ -85,6 +85,26 @@ public class FriendRequestDAO {
 					conn.commit();
 					return true;
 				}
+			} else if (status == 'a') {  // 수락인 경우
+				// sender 찾기
+				int receiver_id = 0;
+				pstmt2 = conn.prepareStatement("select receiver_id from friend_request where id=?");
+				pstmt2.setInt(1, requestId);
+				ResultSet rs = pstmt2.executeQuery();
+				
+				if (rs.next()) {
+					receiver_id = rs.getInt("receiver_id");
+				}
+				
+				//포인트 +500
+				pstmt3 = conn.prepareStatement("UPDATE user SET point=(point-500) WHERE user_id=?");
+				pstmt3.setInt(1, receiver_id);
+				int rowsUpdate3 = pstmt3.executeUpdate();
+			
+				if (rowsUpdate1 != 0 && rowsUpdate3 != 0) {
+					conn.commit();
+					return true;
+				}
 			} else {
 				if (rowsUpdate1 != 0) {
 					conn.commit();
