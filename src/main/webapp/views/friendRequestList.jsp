@@ -7,7 +7,6 @@
 .fixed-header thead {
 	position: sticky;
 	top: 0;
-	background-color: #f8f8f8; /* 제목 배경색 */
 	z-index: 10; /* 다른 요소 위에 오도록 설정 */
 }
 
