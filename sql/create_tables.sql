@@ -3,7 +3,7 @@ use wefifty;
 CREATE TABLE user (
     user_id INT NOT NULL AUTO_INCREMENT,
     email VARCHAR(255) NOT NULL UNIQUE,
-    pwd VARCHAR(20) NOT NULL,
+    pwd VARCHAR(255) NOT NULL,
     nickname VARCHAR(50) NOT NULL,
     bio TEXT NOT NULL,
     name VARCHAR(50) NOT NULL,
