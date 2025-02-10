@@ -36,12 +36,9 @@
     
     
         <a href="#">
-            <img src="images/wefifty_logo.png" alt="">
+            <h1 class="font-bold text-lg" style="color:white;">WEFIFTY</h1>
         </a>
-        
-        <button onclick="loadView('profile', profileScript)" class="flex flex-col items-center">
-            <img src="https://placehold.co/40" class="w-10 h-10 rounded-full border-2 border-white" alt="User profile avatar">
-            <p class="text-sm text-white mt-1">김철수 님</p>
+        <button id="nav-profile-view" onclick="loadView('profile', profileScript)" class="flex flex-col items-center">
         </button>
         
         <button onclick="loadFriendRecommendation()" class="flex flex-col items-center text-white sidebar-btn">
@@ -78,5 +75,8 @@
        
     </div>
    
+<script>
+	getNavProfileAction();
+</script>
 </body>
 </html>
