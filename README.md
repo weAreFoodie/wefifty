@@ -149,27 +149,30 @@
 ## 📒**5. Pages and Features** 
 
 ### 1. 로그인
-![[login.png]]
+![Image](https://github.com/user-attachments/assets/cf682bb4-3f12-4f99-a35c-8d33d93ac6b2)
 
-### 회원 가입![[signup.png]]
+### 회원 가입
+![Image](https://github.com/user-attachments/assets/cf4e16db-33d5-491a-9afd-cfad63f179c6)
 
-### 친구 찾기![[requestFrined.png]]
+### 친구 찾기
+![Image](https://github.com/user-attachments/assets/e392d9eb-a139-4567-b1ec-de5fe64481c1)
+
 ### 친구 목록
 
 ### 친구 요청
 
 ### 포인트 충전
-![[chargePoint.png]]
+![Image](https://github.com/user-attachments/assets/95308da6-146f-4ee2-bb00-d8d7345053c5)
 
 ## 💣**6. Troubleshooting**
-> **문제1. 브렌치를 merge하지 않고 삭제 하는 문제 발생** <br>
+**문제1. 브렌치를 merge하지 않고 삭제 하는 문제 발생** <br>
 > feature/login 브렌치에서 로그인 기능을 추가 하고 dev 브렌치에 merge가 성공적으로 된 줄 알고 로컬, 원격 브렌치를 모두 삭제하는 문제가 발생했다.
->
-> **문제 1 브렌치 복구 하기**<br>
-> 1. 최근 작업 내용 확인
+
+**문제 1 브렌치 복구 하기**<br>
+1. 최근 작업 내용 확인
 > 	`git reflog` : 최근 작업 내용을 확인하는 명령어
-> 	![[trouble1.1.png]]
-> 2. 해당 커밋을 기준으로 브렌치 복구
+> 	![Image](https://github.com/user-attachments/assets/d3f2233e-91d3-4b0a-a2ed-eedde62543e1)
+2. 해당 커밋을 기준으로 브렌치 복구
 >	`git checkout -b feature/login d652904` : git checkout -b <branch 이름> <해당 커밋 해시>
 
 
