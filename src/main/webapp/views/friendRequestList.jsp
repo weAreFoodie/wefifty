@@ -61,7 +61,7 @@
 									<img src="https://placehold.co/40"
 										class="w-10 h-10 rounded-full" alt="Profile">
 								</c:if> <c:if test="${ not empty send.profilePicture }">
-									<img src="${ receive.profilePicture }"
+									<img src="${ send.profilePicture }"
 										class="w-10 h-10 rounded-full" alt="Profile">
 								</c:if></td>
 							<td class="p-3">${send.name}</td>
