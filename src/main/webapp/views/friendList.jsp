@@ -56,9 +56,14 @@
 			<c:forEach items="${requestScope.friendList}" var="friend">
 				<!-- TODO 이름 클릭 시 카드 띄우기 -->
 				<tr class="border-t hover:bg-gray-100" onclick="getFriendCard('friendList', ${friend.userId})">
-					<td class="p-3 flex items-center space-x-3"><img
-						src="https://placehold.co/40" class="w-10 h-10 rounded-full"
-						alt="Profile"></td>
+					<td class="p-3 flex items-center space-x-3"><c:if
+							test="${ empty friend.profilePicture }">
+							<img src="https://placehold.co/40" class="w-10 h-10 rounded-full"
+								alt="Profile">
+						</c:if> <c:if test="${ not empty friend.profilePicture }">
+							<img src="${ friend.profilePicture }"
+								class="w-10 h-10 rounded-full" alt="Profile">
+						</c:if></td>
 					<td class="p-3">${friend.name}</td>
 					<c:if test="${friend.gender.toString() == 'm'}">
 						<td class="p-3">남자</td>
