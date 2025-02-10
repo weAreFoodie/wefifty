@@ -33,7 +33,7 @@
 <div class="flex justify-between items-center mb-6 mx-16 my-12">
 	<h1 class="text-2xl font-bold">친구 요청</h1>
 	<button onclick="friendRequestListScript()"
-		class="bg-blue-500 text-white px-4 py-2 rounded-md">새로고침</button>
+		class="bg-green-500 text-white px-4 py-2 rounded-md">새로고침</button>
 </div>
 
 <div class="flex items-start space-x-6 mx-24 my-8">

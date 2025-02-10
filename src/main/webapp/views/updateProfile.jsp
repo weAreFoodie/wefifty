@@ -26,22 +26,7 @@
     }
 %>
 
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>회원 정보 수정 | WEFIFTY</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 text-black">
-
-    <!-- Navigation -->
-    <nav class="w-full px-10 py-4 flex justify-between border-b text-sm fixed top-0 left-0 bg-white shadow-md z-10 h-16">
-        <div class="font-bold text-lg">WEFIFTY</div>
-        <div class="font-bold text-sm">회원 정보 수정</div>
-    </nav>
-
+<div class="bg-gray-50 text-black h-[100vh] overflow-scroll">
     <!-- Update Form -->
     <form name="updateForm" method="post" action="updateProfile">
     	<input type="hidden" name="command" value="updateProfile">
@@ -152,5 +137,4 @@
         </div>
     </form>
 
-</body>
-</html>
+</div>

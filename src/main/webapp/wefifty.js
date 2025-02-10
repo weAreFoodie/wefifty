@@ -42,7 +42,15 @@ async function ajaxRequest(method, query, postData = null) {
       if (this.readyState === 4) {
         if (this.status >= 200 && this.status < 300) {
           resolve(this.responseText);
-        } else {
+        } else if (this.status == 404 || this.status >= 500) {
+			reject(new Error(`
+					<div>
+						<p>죄송합니다.</p>
+						<p>현재 서비스 이용이 불가합니다.<p/>		
+					</div>
+				`));
+		}
+		else {
           reject(new Error(this.responseText));
         }
       }

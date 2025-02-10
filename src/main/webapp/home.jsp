@@ -39,7 +39,7 @@
             <h1 class="font-bold text-lg" style="color:white;">WEFIFTY</h1>
         </a>
 
-        <button id="nav-profile-view" onclick="loadView('profile', profileScript)" class="flex flex-col items-center">
+        <button id="nav-profile-view" onclick="loadView('updateProfile', profileScript)" class="flex flex-col items-center">
 
         </button>
         
