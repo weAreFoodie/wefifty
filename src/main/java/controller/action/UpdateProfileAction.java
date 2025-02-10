@@ -78,7 +78,6 @@ public class UpdateProfileAction implements Action{
             // 업데이트 성공 후 홈 페이지로 이동
             response.sendRedirect("home.jsp");
         } catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
         	

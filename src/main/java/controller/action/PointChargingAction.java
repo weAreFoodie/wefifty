@@ -18,8 +18,6 @@ public class PointChargingAction implements Action {
         HttpSession session = request.getSession();
         Integer userId = (Integer) session.getAttribute("userIdKey");
         
-        // FIXME: 세션 구현 전 임시 코드
-        
         int amount = Integer.parseInt(request.getParameter("amount"));
         
         response.setContentType("application/json");
