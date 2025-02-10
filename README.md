@@ -14,6 +14,8 @@
 [------ user_school](#-user_school) <br>
 [6. Troubleshooting](#6-troubleshooting) <br>
 [7. Review](#7-review) <br>
+[8. How to Contibute](#8-how-to-contibute) <br>
+
 
 ## 🖥️**1. Overview**
 
@@ -110,40 +112,44 @@
 ## 📂**5. ERD**
 ![erd](/img/wefifty_erd.png)
 
-### 😀 **user**
+# 😀 user
 
-| Field           | Type         | Null |Key| Default | Extra          | desc |
-| --------------- | ------------ | ---- |---| ------- | -------------- | ---- |
-| user_id         | int          | NO   |PRI|         | auto_increment | |
-| email           | varchar(255) | NO   |UNI|         |                | |
-| pwd             | varchar(20)  | NO   |   |         |                | |
-| nickname        | varchar(50)  | NO   |   |         |                | |
-| bio             | text         | NO   |   |         |                | |
-| name            | varchar(50)  | NO   |   |         |                | |
-| gender          | char(1)      | NO   |   |         |                | |
-| phone           | varchar(20)  | NO   |UNI|         |                | |
-| birth           | date         | NO   |   |         |                | |
-| profile_picture | varchar(255) | YES  |   |         |                | |
-| point           | int          | NO   |   | 1000    |                | |
+| Field           | Type         | Null | Key | Default | Extra                                     | Desc |
+| --------------- | ------------ | ---- | --- | ------- | ----------------------------------------- | ---- |
+| user_id         | int          | NO   | PRI |         | auto_increment                           | |
+| email           | varchar(255) | NO   | UNI |         |                                          | |
+| pwd             | varchar(255) | NO   |     |         |                                          | |
+| nickname        | varchar(50)  | NO   |     |         |                                          | |
+| bio             | text         | NO   |     |         |                                          | |
+| name            | varchar(50)  | NO   |     |         |                                          | |
+| gender          | char(1)      | NO   |     |         | CHECK (gender IN ('f', 'm'))             | |
+| phone           | varchar(20)  | NO   | UNI |         |                                          | |
+| birth           | date         | NO   |     |         |                                          | |
+| profile_picture | varchar(255) | YES  |     |         |                                          | |
+| point           | int          | NO   |     | 1000                                      | |
 
-### 🎫 **friend_request**
-| Field       | Type    | Null | Key | Default | Extra          | desc |
-| ----------- | ------- | ---- | --- | ------- | -------------- | ---- |
-| id          | int     | NO   | PRI |         | auto_increment | |
-| sender_id   | int     | NO   | MUL |         |                | |
-| receiver_id | int     | NO   | MUL |         |                | |
-| status      | char(1) | NO   |     |         |                | |
+---
 
+# 🎫 friend_request
 
-### 🏫 **user_school**
-| Field          | Type        | Null | Key | Default | Extra          | desc |
-| -------------- | ----------- | ---- | --- | ------- | -------------- | ---- |
-| user_school_id | int         | NO   | PRI |         | auto_increment | |
-| user_id        | int         | NO   | MUL |         |                | |
-| school_name    | varchar(50) | NO   |     |         |                | |
-| grad_year      | year        | NO   |     |         |                | |
-| school_type    | char(1)     | NO   |     |         |                | |
+| Field       | Type    | Null | Key | Default | Extra                              | Desc |
+| ----------- | ------- | ---- | --- | ------- | ---------------------------------- | ---- |
+| id          | int     | NO   | PRI |         | auto_increment                    | |
+| sender_id   | int     | NO   | MUL |         |                                  | |
+| receiver_id | int     | NO   | MUL |         |                                  | |
+| status      | char(1) | NO   |     |         | CHECK (status IN ('p', 'a', 'r')) | |
 
+---
+
+# 🏫 user_school
+
+| Field          | Type        | Null | Key | Default | Extra                                      | Desc |
+| -------------- | ----------- | ---- | --- | ------- | ----------------------------------------- | ---- |
+| user_school_id | int         | NO   | PRI |         | auto_increment                            | |
+| user_id        | int         | NO   | MUL |         |                                          | |
+| school_name    | varchar(50) | NO   |     |         |                                          | |
+| grad_year      | year        | NO   |     |         |                                          | |
+| school_type    | char(1)     | NO   |     |         | CHECK (school_type IN ('e', 'm', 'h', 'u')) | |
 
 ---
 ## 📒**5. Pages and Features** 

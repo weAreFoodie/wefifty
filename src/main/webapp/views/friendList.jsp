@@ -54,7 +54,6 @@
 		</thead>
 		<tbody>
 			<c:forEach items="${requestScope.friendList}" var="friend">
-				<!-- TODO 이름 클릭 시 카드 띄우기 -->
 				<tr class="border-t hover:bg-gray-100" onclick="getFriendCard('friendList', ${friend.userId})">
 					<td class="p-3 flex items-center space-x-3"><c:if
 							test="${ empty friend.profilePicture }">

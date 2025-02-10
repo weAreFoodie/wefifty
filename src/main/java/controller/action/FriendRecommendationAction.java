@@ -21,9 +21,6 @@ public class FriendRecommendationAction implements Action {
 		HttpSession session = request.getSession();
 		int userId = (Integer) session.getAttribute("userIdKey");
 		
-		// FIXME 테스트용
-//		int userId = 1;
-		
 		try {
 			// 해당 userId의 (학교 이름, 졸업년도) 리스트 받아오기 (회원이 속한 학교들의 이름과 졸업년도 받아오기)
 			ArrayList<UserSchoolSummaryDTO> schoolSummaryList = UserSchoolDAO.findUserSchoolSummaryByUserId(userId);

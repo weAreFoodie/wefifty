@@ -17,8 +17,6 @@
     <!-- 세션에 저장된 userId를 전역 변수 currentUserId에 할당 -->
     <script>
       const currentUserId = "${sessionScope.userIdKey}";
-      // FIXME 테스트용
-      //const currentUserId = 1;
     </script>
     <script src="wefifty.js"></script>
     <style>
@@ -54,12 +52,12 @@
         </button>
         
         <button onclick="loadView('friendRequestList', friendRequestListScript)" class="flex flex-col items-center text-white sidebar-btn">
-            <i class="fas fa-users fa-2x"></i>
+            <i class="fas fa-paper-plane fa-2x"></i>
             <span class="text-xs mt-1">친구 요청</span>
         </button>
         
         <button onclick="loadView('pointCharging', pointChargingScript)" class="flex flex-col items-center text-white sidebar-btn">
-            <i class="fas fa-users fa-2x"></i>
+            <i class="fas fa-credit-card fa-2x"></i>
             <span class="text-xs mt-1">포인트 충전</span>
         </button>
         
