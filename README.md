@@ -148,7 +148,7 @@
 ---
 ## 📒**5. Pages and Features** 
 
-### 1. 로그인
+### 로그인
 ![Image](https://github.com/user-attachments/assets/cf682bb4-3f12-4f99-a35c-8d33d93ac6b2)
 
 ### 회원 가입
@@ -158,14 +158,16 @@
 ![Image](https://github.com/user-attachments/assets/e392d9eb-a139-4567-b1ec-de5fe64481c1)
 
 ### 친구 목록
+![Image](https://github.com/user-attachments/assets/e31825c4-b99c-4983-9b34-d7916a205527)
 
 ### 친구 요청
+![Image](https://github.com/user-attachments/assets/7baf8fd9-9f75-4b08-8218-4c9df5333e70)
 
 ### 포인트 충전
 ![Image](https://github.com/user-attachments/assets/95308da6-146f-4ee2-bb00-d8d7345053c5)
 
 ## 💣**6. Troubleshooting**
-**문제1. 브렌치를 merge하지 않고 삭제 하는 문제 발생** <br>
+**문제 1 브렌치를 merge하지 않고 삭제 하는 문제 발생** <br>
 > feature/login 브렌치에서 로그인 기능을 추가 하고 dev 브렌치에 merge가 성공적으로 된 줄 알고 로컬, 원격 브렌치를 모두 삭제하는 문제가 발생했다.
 
 **문제 1 브렌치 복구 하기**<br>
