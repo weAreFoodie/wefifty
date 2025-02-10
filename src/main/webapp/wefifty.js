@@ -4,6 +4,7 @@
   style.textContent = `
   		.swiper-button-next, .swiper-button-prev {
 			position: absolute;
+			opacity: 100;
   	        font-size: 50px !important; 
   	        width: 80px !important;     
   	        height: 160px !important;    
