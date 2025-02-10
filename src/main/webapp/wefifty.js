@@ -314,4 +314,18 @@ function filterFriends() {
 	});
 }
 
+function getFriendCard(originPage, friendId) {
+	console.log("friendListScript");
+	
+	const homeMainView = document.getElementById("home-mainView");
+	
+	// 서블릿 부르기
+	ajaxRequest("POST", "home?command=GetFriendCard&originPage=" + originPage + "&friendId=" + friendId)
+	.then((succ) => {
+		homeMainView.innerHTML = succ; // 성공일 시 페이지 교체
+	}).catch((err) => {
+		Swal.fire("요청 실패", err.message, "error");  // 실패일 시 팝업 띄우기
+	})
+}
+
 
